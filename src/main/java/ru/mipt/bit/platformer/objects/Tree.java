@@ -14,29 +14,26 @@ public class Tree {
     // Graphics
     private final ModelTexture greenTree;
 
-    // Model
-    private final GridPoint2 treeObstacleCoordinates;
-    private final Rectangle treeObstacleRectangle;
+    // Model position
+    private final ModelPosition position;
 
     public Tree(String pathTreePng, int x, int y) {
 
         greenTree = new ModelTexture(pathTreePng);
-
-        treeObstacleCoordinates = new GridPoint2(x, y);
-        treeObstacleRectangle = createBoundingRectangle(greenTree.TextureRegion_);
+        position = new ModelPosition(x, y, greenTree.TextureRegion_);
     }
     public GridPoint2 getCoords() {
-        return treeObstacleCoordinates;
+        return position.Coordinates_;
     }
 
     public void draw(Batch batch) {
         // render tree obstacle
-        drawTextureRegionUnscaled(batch, greenTree.TextureRegion_, treeObstacleRectangle, 0f);
+        drawTextureRegionUnscaled(batch, greenTree.TextureRegion_, position.Rectangle_, 0f);
     }
 
     public void rectToCenter(TiledMapTileLayer groundLayer) {
 
-        moveRectangleAtTileCenter(groundLayer, treeObstacleRectangle, treeObstacleCoordinates);
+        moveRectangleAtTileCenter(groundLayer, position.Rectangle_, position.Coordinates_);
     }
 
     public void Dispose() {

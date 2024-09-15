@@ -15,25 +15,23 @@ public class Tank {
     // Graphics
     private final ModelTexture blueTank;
 
-    // Model
-    private final Rectangle playerRectangle;
-    // player current position coordinates on level 10x8 grid (e.g. x=0, y=1)
-    private final GridPoint2 playerCoordinates;
+    // Model position
+    private final ModelPosition position;
+    private float playerRotation;
+
     // which tile the player want to go next
     private final GridPoint2 playerDestinationCoordinates;
     private float playerMovementProgress = 1f;
-    private float playerRotation;
 
     public Tank(String pathToPng, int x, int y) {
 
         // Texture decodes an image file and loads it into GPU memory, it represents a native resource
         // TextureRegion represents Texture portion, there may be many TextureRegion instances of the same Texture
         blueTank = new ModelTexture(pathToPng);
+        position = new ModelPosition(x, y, blueTank.TextureRegion_);
 
-        playerRectangle = createBoundingRectangle(blueTank.TextureRegion_);
         // set player initial position
-        playerDestinationCoordinates = new GridPoint2(1, 1);
-        playerCoordinates = new GridPoint2(playerDestinationCoordinates);
+        playerDestinationCoordinates = new GridPoint2(x, y);
         playerRotation = 0f;
     }
 
@@ -64,31 +62,31 @@ public class Tank {
         playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, movement_speed);
         if (isEqual(playerMovementProgress, 1f)) {
             // record that the player has reached his/her destination
-            playerCoordinates.set(playerDestinationCoordinates);
+            position.Coordinates_.set(playerDestinationCoordinates);
         }
     }
 
     public void movePic(TileMovement tileMovement) {
         // calculate interpolated player screen coordinates
-        tileMovement.moveRectangleBetweenTileCenters(playerRectangle, playerCoordinates, playerDestinationCoordinates, playerMovementProgress);
+        tileMovement.moveRectangleBetweenTileCenters(position.Rectangle_, position.Coordinates_, playerDestinationCoordinates, playerMovementProgress);
     }
 
     public boolean canMoveUp(GridPoint2 obstacle) {
-        return !obstacle.equals(incrementedY(playerCoordinates));
+        return !obstacle.equals(incrementedY(position.Coordinates_));
     }
     public boolean canMoveDown(GridPoint2 obstacle) {
-        return !obstacle.equals(decrementedY(playerCoordinates));
+        return !obstacle.equals(decrementedY(position.Coordinates_));
     }
     public boolean canMoveLeft(GridPoint2 obstacle) {
-        return !obstacle.equals(decrementedX(playerCoordinates));
+        return !obstacle.equals(decrementedX(position.Coordinates_));
     }
     public boolean canMoveRight(GridPoint2 obstacle) {
-        return !obstacle.equals(incrementedX(playerCoordinates));
+        return !obstacle.equals(incrementedX(position.Coordinates_));
     }
 
     public void draw(Batch batch) {
         // render player
-        drawTextureRegionUnscaled(batch, blueTank.TextureRegion_, playerRectangle, playerRotation);
+        drawTextureRegionUnscaled(batch, blueTank.TextureRegion_, position.Rectangle_, playerRotation);
     }
 
     public void dispose() {
