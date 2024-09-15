@@ -35,10 +35,10 @@ public class Tank {
         playerRotation = 0f;
     }
 
-    public void MoveTank(boolean isMove, float Rotation, Movements action) {
+    public void MoveTank(boolean isMove, Direction action) {
         if (isEqual(playerMovementProgress, 1f)) {
             if (isMove) {
-                switch (action) {
+                switch (action.direction) {
                     case UP:
                         playerDestinationCoordinates.y++;
                         break;
@@ -55,7 +55,7 @@ public class Tank {
 
                 playerMovementProgress = 0f;
             }
-            playerRotation = Rotation;
+            playerRotation = action.toRotation();
         }
     }
     public void movementProgess(float deltaTime, float movement_speed) {

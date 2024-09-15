@@ -15,8 +15,9 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
+import ru.mipt.bit.platformer.objects.Direction;
+import ru.mipt.bit.platformer.objects.Direction.To;
 import ru.mipt.bit.platformer.objects.Map;
-import ru.mipt.bit.platformer.objects.Movements;
 import ru.mipt.bit.platformer.objects.Tree;
 import ru.mipt.bit.platformer.objects.Tank;
 import ru.mipt.bit.platformer.util.TileMovement;
@@ -61,16 +62,16 @@ public class GameDesktopLauncher implements ApplicationListener {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W))
-            player.MoveTank(player.canMoveUp(singleTree.getCoords()), 90f, Movements.UP);
+            player.MoveTank(player.canMoveUp(singleTree.getCoords()), new Direction(To.UP));
 
         if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A))
-            player.MoveTank(player.canMoveLeft(singleTree.getCoords()), -180f, Movements.LEFT);
+            player.MoveTank(player.canMoveLeft(singleTree.getCoords()), new Direction(To.LEFT));
 
         if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S))
-            player.MoveTank(player.canMoveDown(singleTree.getCoords()), -90f, Movements.DOWN);
+            player.MoveTank(player.canMoveDown(singleTree.getCoords()), new Direction(To.DOWN));
 
         if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D))
-            player.MoveTank(player.canMoveRight(singleTree.getCoords()), 0f, Movements.RIGHT);
+            player.MoveTank(player.canMoveRight(singleTree.getCoords()), new Direction(To.RIGHT));
 
         player.movePic(tileMovement);
         player.movementProgess(deltaTime, MOVEMENT_SPEED);
