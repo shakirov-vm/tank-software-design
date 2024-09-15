@@ -12,8 +12,10 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
 public class Tank {
 
-    private final Texture blueTankTexture;
-    private final TextureRegion playerGraphics;
+    // Graphics
+    private final ModelTexture blueTank;
+
+    // Model
     private final Rectangle playerRectangle;
     // player current position coordinates on level 10x8 grid (e.g. x=0, y=1)
     private final GridPoint2 playerCoordinates;
@@ -25,10 +27,10 @@ public class Tank {
     public Tank(String pathToPng, int x, int y) {
 
         // Texture decodes an image file and loads it into GPU memory, it represents a native resource
-        blueTankTexture = new Texture(pathToPng);
         // TextureRegion represents Texture portion, there may be many TextureRegion instances of the same Texture
-        playerGraphics = new TextureRegion(blueTankTexture);
-        playerRectangle = createBoundingRectangle(playerGraphics);
+        blueTank = new ModelTexture(pathToPng);
+
+        playerRectangle = createBoundingRectangle(blueTank.TextureRegion_);
         // set player initial position
         playerDestinationCoordinates = new GridPoint2(1, 1);
         playerCoordinates = new GridPoint2(playerDestinationCoordinates);
@@ -86,10 +88,10 @@ public class Tank {
 
     public void draw(Batch batch) {
         // render player
-        drawTextureRegionUnscaled(batch, playerGraphics, playerRectangle, playerRotation);
+        drawTextureRegionUnscaled(batch, blueTank.TextureRegion_, playerRectangle, playerRotation);
     }
 
     public void dispose() {
-        blueTankTexture.dispose();
+        blueTank.Texture_.dispose();
     }
 }

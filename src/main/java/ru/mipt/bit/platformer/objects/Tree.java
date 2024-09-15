@@ -11,17 +11,19 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
 public class Tree {
 
-    private final Texture greenTreeTexture;
-    private final TextureRegion treeObstacleGraphics;
+    // Graphics
+    private final ModelTexture greenTree;
+
+    // Model
     private final GridPoint2 treeObstacleCoordinates;
     private final Rectangle treeObstacleRectangle;
 
     public Tree(String pathTreePng, int x, int y) {
 
-        greenTreeTexture = new Texture(pathTreePng);
-        treeObstacleGraphics = new TextureRegion(greenTreeTexture);
+        greenTree = new ModelTexture(pathTreePng);
+
         treeObstacleCoordinates = new GridPoint2(x, y);
-        treeObstacleRectangle = createBoundingRectangle(treeObstacleGraphics);
+        treeObstacleRectangle = createBoundingRectangle(greenTree.TextureRegion_);
     }
     public GridPoint2 getCoords() {
         return treeObstacleCoordinates;
@@ -29,7 +31,7 @@ public class Tree {
 
     public void draw(Batch batch) {
         // render tree obstacle
-        drawTextureRegionUnscaled(batch, treeObstacleGraphics, treeObstacleRectangle, 0f);
+        drawTextureRegionUnscaled(batch, greenTree.TextureRegion_, treeObstacleRectangle, 0f);
     }
 
     public void rectToCenter(TiledMapTileLayer groundLayer) {
@@ -38,6 +40,6 @@ public class Tree {
     }
 
     public void Dispose() {
-        greenTreeTexture.dispose();
+        greenTree.Texture_.dispose();
     }
 }
