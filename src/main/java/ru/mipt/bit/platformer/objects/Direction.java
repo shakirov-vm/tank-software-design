@@ -15,7 +15,7 @@ public class Direction {
         direction = direction_;
     }
 
-    float toRotation() {
+    public float toRotation() {
         switch (direction) {
             case RIGHT:
                 return 0f;
