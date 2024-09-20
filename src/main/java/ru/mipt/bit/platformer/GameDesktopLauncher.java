@@ -15,10 +15,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.objects.Map;
-import ru.mipt.bit.platformer.objects.Movements;
-import ru.mipt.bit.platformer.objects.Tree;
-import ru.mipt.bit.platformer.objects.Tank;
+import ru.mipt.bit.platformer.objects.*;
+import ru.mipt.bit.platformer.objects.Direction.To;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static com.badlogic.gdx.Input.Keys.*;
@@ -38,6 +36,8 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Tree singleTree;
     private Tank player;
 
+    private TapHandler keys;
+
     @Override
     public void create() {
 
@@ -47,6 +47,8 @@ public class GameDesktopLauncher implements ApplicationListener {
         singleTree = new Tree("images/greenTree.png", 4, 3);
         player = new Tank("images/tank_blue.png", 5, 2);
         tileMovement = map.createTileMovement();
+
+        keys = new TapHandler(player, singleTree);
 
         singleTree.rectToCenter(map.getGroundLayer());
     }
@@ -60,17 +62,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         // get time passed since the last render
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W))
-            player.MoveTank(player.canMoveUp(singleTree.getCoords()), 90f, Movements.UP);
-
-        if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A))
-            player.MoveTank(player.canMoveLeft(singleTree.getCoords()), -180f, Movements.LEFT);
-
-        if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S))
-            player.MoveTank(player.canMoveDown(singleTree.getCoords()), -90f, Movements.DOWN);
-
-        if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D))
-            player.MoveTank(player.canMoveRight(singleTree.getCoords()), 0f, Movements.RIGHT);
+        keys.handle();
 
         player.movePic(tileMovement);
         player.movementProgess(deltaTime, MOVEMENT_SPEED);
