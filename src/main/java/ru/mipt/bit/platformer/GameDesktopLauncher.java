@@ -29,6 +29,20 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private static final float MOVEMENT_SPEED = 0.4f;
 
+    private static final int SCREEN_WIDTH = 1280;
+    private static final int SCREEN_HEIGHT = 1024;
+
+    private static final String TREE_PATH_TO_PNG = "images/greenTree.png";
+    private static final String TANK_PATH_TO_PNG = "images/tank_blue.png";
+
+    private static final String MAP_PATH_TO_TMX = "level.tmx";
+
+    private static final int TREE_START_X_COORD = 4;
+    private static final int TREE_START_Y_COORD = 3;
+
+    private static final int TANK_START_X_COORD = 5;
+    private static final int TANK_START_Y_COORD = 2;
+
     private Batch batch;
     private TileMovement tileMovement;
 
@@ -43,9 +57,9 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         batch = new SpriteBatch();
 
-        map = new Map(batch, "level.tmx");
-        singleTree = new Tree("images/greenTree.png", 4, 3);
-        player = new Tank("images/tank_blue.png", 5, 2);
+        map = new Map(batch, MAP_PATH_TO_TMX);
+        singleTree = new Tree(TREE_PATH_TO_PNG, TREE_START_X_COORD, TREE_START_Y_COORD);
+        player = new Tank(TANK_PATH_TO_PNG, TANK_START_X_COORD, TANK_START_Y_COORD);
         tileMovement = map.createTileMovement();
 
         keys = new TapHandler(player, singleTree);
@@ -104,7 +118,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     public static void main(String[] args) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         // level width: 10 tiles x 128px, height: 8 tiles x 128px
-        config.setWindowedMode(1280, 1024);
+        config.setWindowedMode(SCREEN_WIDTH, SCREEN_HEIGHT);
         new Lwjgl3Application(new GameDesktopLauncher(), config);
     }
 }

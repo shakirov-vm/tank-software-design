@@ -2,6 +2,12 @@ package ru.mipt.bit.platformer.objects;
 
 public class Direction {
 
+    public static final float RIGHT_DIRECTION = 0f;
+    public static final float UP_DIRECTION = 90f;
+    public static final float LEFT_DIRECTION = -180f;
+    public static final float DOWN_DIRECTION = -90f;
+    public static final float INVALID_DIRECTION = -360f;
+
     public enum To {
         UP,
         DOWN,
@@ -18,15 +24,15 @@ public class Direction {
     public float toRotation() {
         switch (direction) {
             case RIGHT:
-                return 0f;
+                return RIGHT_DIRECTION;
             case UP:
-                return 90f;
+                return UP_DIRECTION;
             case LEFT:
-                return -180f;
+                return LEFT_DIRECTION;
             case DOWN:
-                return -90f;
+                return DOWN_DIRECTION;
         }
         assert false;
-        return 0f; // Unreachable
+        return INVALID_DIRECTION; // Unreachable
     }
 }
