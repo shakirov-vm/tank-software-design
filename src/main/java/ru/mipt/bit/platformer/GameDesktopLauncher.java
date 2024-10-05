@@ -15,10 +15,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.objects.Map;
-import ru.mipt.bit.platformer.objects.Movements;
-import ru.mipt.bit.platformer.objects.Tree;
-import ru.mipt.bit.platformer.objects.Tank;
+import ru.mipt.bit.platformer.objects.*;
+import ru.mipt.bit.platformer.objects.Direction.To;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static com.badlogic.gdx.Input.Keys.*;
@@ -31,6 +29,20 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private static final float MOVEMENT_SPEED = 0.4f;
 
+    private static final int SCREEN_WIDTH = 1280;
+    private static final int SCREEN_HEIGHT = 1024;
+
+    private static final String TREE_PATH_TO_PNG = "images/greenTree.png";
+    private static final String TANK_PATH_TO_PNG = "images/tank_blue.png";
+
+    private static final String MAP_PATH_TO_TMX = "level.tmx";
+
+    private static final int TREE_START_X_COORD = 4;
+    private static final int TREE_START_Y_COORD = 3;
+
+    private static final int TANK_START_X_COORD = 5;
+    private static final int TANK_START_Y_COORD = 2;
+
     private Batch batch;
     private TileMovement tileMovement;
 
@@ -38,15 +50,19 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Tree singleTree;
     private Tank player;
 
+    private TapHandler keys;
+
     @Override
     public void create() {
 
         batch = new SpriteBatch();
 
-        map = new Map(batch, "level.tmx");
-        singleTree = new Tree("images/greenTree.png", 4, 3);
-        player = new Tank("images/tank_blue.png", 5, 2);
+        map = new Map(batch, MAP_PATH_TO_TMX);
+        singleTree = new Tree(TREE_PATH_TO_PNG, TREE_START_X_COORD, TREE_START_Y_COORD);
+        player = new Tank(TANK_PATH_TO_PNG, TANK_START_X_COORD, TANK_START_Y_COORD);
         tileMovement = map.createTileMovement();
+
+        keys = new TapHandler(player, singleTree);
 
         singleTree.rectToCenter(map.getGroundLayer());
     }
@@ -60,17 +76,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         // get time passed since the last render
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W))
-            player.MoveTank(player.canMoveUp(singleTree.getCoords()), 90f, Movements.UP);
-
-        if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A))
-            player.MoveTank(player.canMoveLeft(singleTree.getCoords()), -180f, Movements.LEFT);
-
-        if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S))
-            player.MoveTank(player.canMoveDown(singleTree.getCoords()), -90f, Movements.DOWN);
-
-        if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D))
-            player.MoveTank(player.canMoveRight(singleTree.getCoords()), 0f, Movements.RIGHT);
+        keys.handle();
 
         player.movePic(tileMovement);
         player.movementProgess(deltaTime, MOVEMENT_SPEED);
@@ -112,7 +118,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     public static void main(String[] args) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         // level width: 10 tiles x 128px, height: 8 tiles x 128px
-        config.setWindowedMode(1280, 1024);
+        config.setWindowedMode(SCREEN_WIDTH, SCREEN_HEIGHT);
         new Lwjgl3Application(new GameDesktopLauncher(), config);
     }
 }
