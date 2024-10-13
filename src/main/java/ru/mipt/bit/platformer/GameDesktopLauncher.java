@@ -4,26 +4,19 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Rectangle;
 import ru.mipt.bit.platformer.objects.*;
-import ru.mipt.bit.platformer.objects.Direction.To;
 import ru.mipt.bit.platformer.util.TileMovement;
 
-import static com.badlogic.gdx.Input.Keys.*;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
-import static com.badlogic.gdx.math.MathUtils.isEqual;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.incrementedY;
 
 public class GameDesktopLauncher implements ApplicationListener {
 
@@ -36,6 +29,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private static final String TANK_PATH_TO_PNG = "images/tank_blue.png";
 
     private static final String MAP_PATH_TO_TMX = "level.tmx";
+    private static final String OBSTACLES_PATH_TO_TMX = "src/main/resources/obstacles.txt";
 
     private static final int TREE_START_X_COORD = 4;
     private static final int TREE_START_Y_COORD = 3;
@@ -47,10 +41,26 @@ public class GameDesktopLauncher implements ApplicationListener {
     private TileMovement tileMovement;
 
     private Map map;
-    private Tree singleTree;
+    private Set<Tree> obstacles = new HashSet<Tree>();
     private Tank player;
+    private MapInitObjects initObjects;
 
     private TapHandler keys;
+
+    private enum obstaclesCreateMode {
+        RANDOM_OBSTACLES,
+        OBSTACLES_FROM_FILE,
+    }
+
+    private obstaclesCreateMode obstaclesMode;
+
+    public GameDesktopLauncher() {
+        obstaclesMode = obstaclesCreateMode.RANDOM_OBSTACLES;
+    }
+    public GameDesktopLauncher(Path toObstaclesCoords) throws IOException {
+        obstaclesMode = obstaclesCreateMode.OBSTACLES_FROM_FILE;
+        initObjects = new PathObstacles(toObstaclesCoords);
+    }
 
     @Override
     public void create() {
@@ -58,13 +68,17 @@ public class GameDesktopLauncher implements ApplicationListener {
         batch = new SpriteBatch();
 
         map = new Map(batch, MAP_PATH_TO_TMX);
-        singleTree = new Tree(TREE_PATH_TO_PNG, TREE_START_X_COORD, TREE_START_Y_COORD);
-        player = new Tank(TANK_PATH_TO_PNG, TANK_START_X_COORD, TANK_START_Y_COORD);
+        for(GridPoint2 coord : initObjects.getObstacles()) {
+            obstacles.add(new Tree(TREE_PATH_TO_PNG, coord.x, coord.y));
+        }
+        player = new Tank(TANK_PATH_TO_PNG, initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y);
         tileMovement = map.createTileMovement();
 
-        keys = new TapHandler(player, singleTree);
+        keys = new TapHandler(player, initObjects.getObstacles());
 
-        singleTree.rectToCenter(map.getGroundLayer());
+        for(Tree tree: obstacles) {
+            tree.rectToCenter(map.getGroundLayer());
+        }
     }
 
     @Override
@@ -85,7 +99,9 @@ public class GameDesktopLauncher implements ApplicationListener {
         batch.begin();
 
         player.draw(batch);
-        singleTree.draw(batch);
+        for (Tree tree : obstacles) {
+            tree.draw(batch);
+        }
 
         batch.end();
 
@@ -110,15 +126,17 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
         player.dispose();
-        singleTree.Dispose();
+        for (Tree tree : obstacles) {
+            tree.Dispose();
+        }
         map.dispose();
         batch.dispose();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         // level width: 10 tiles x 128px, height: 8 tiles x 128px
         config.setWindowedMode(SCREEN_WIDTH, SCREEN_HEIGHT);
-        new Lwjgl3Application(new GameDesktopLauncher(), config);
+        new Lwjgl3Application(new GameDesktopLauncher(Paths.get(OBSTACLES_PATH_TO_TMX)), config);
     }
 }
