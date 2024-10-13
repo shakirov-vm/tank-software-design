@@ -17,23 +17,20 @@ public class PathObstacles implements MapInitObjects {
 
     public PathObstacles(Path pathToObstacles) throws IOException {
 
-//        System.out.println(pathToObstacles.getName());
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
-
         List<String> lines = Files.readAllLines(pathToObstacles, StandardCharsets.UTF_8);
 
-        int i = 0;
+        int i = lines.size() - 1;
         for (String s: lines) {
             int j = 0;
             for (char c: s.toCharArray()) {
                 if (c == 'T') {
-                    obstacles.add(new GridPoint2(i, j));
+                    obstacles.add(new GridPoint2(j, i));
                 } else if (c == 'X') {
-                    player = new GridPoint2(i, j);
+                    player = new GridPoint2(j, i);
                 }
                 j++;
             }
-            i++;
+            i--;
         }
     }
 
