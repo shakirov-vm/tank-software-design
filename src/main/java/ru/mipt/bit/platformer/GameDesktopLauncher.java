@@ -25,17 +25,14 @@ public class GameDesktopLauncher implements ApplicationListener {
     private static final int SCREEN_WIDTH = 1280;
     private static final int SCREEN_HEIGHT = 1024;
 
+    private static final int TILES_WIDTH = 10;
+    private static final int TILES_HEIGHT = 9;
+
     private static final String TREE_PATH_TO_PNG = "images/greenTree.png";
     private static final String TANK_PATH_TO_PNG = "images/tank_blue.png";
 
     private static final String MAP_PATH_TO_TMX = "level.tmx";
     private static final String OBSTACLES_PATH_TO_TMX = "src/main/resources/obstacles.txt";
-
-    private static final int TREE_START_X_COORD = 4;
-    private static final int TREE_START_Y_COORD = 3;
-
-    private static final int TANK_START_X_COORD = 5;
-    private static final int TANK_START_Y_COORD = 2;
 
     private Batch batch;
     private TileMovement tileMovement;
@@ -56,6 +53,8 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     public GameDesktopLauncher() {
         obstaclesMode = obstaclesCreateMode.RANDOM_OBSTACLES;
+        initObjects = new RandomObjects(TILES_WIDTH, TILES_HEIGHT);
+
     }
     public GameDesktopLauncher(Path toObstaclesCoords) throws IOException {
         obstaclesMode = obstaclesCreateMode.OBSTACLES_FROM_FILE;
@@ -137,6 +136,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         // level width: 10 tiles x 128px, height: 8 tiles x 128px
         config.setWindowedMode(SCREEN_WIDTH, SCREEN_HEIGHT);
-        new Lwjgl3Application(new GameDesktopLauncher(Paths.get(OBSTACLES_PATH_TO_TMX)), config);
+//        new Lwjgl3Application(new GameDesktopLauncher(Paths.get(OBSTACLES_PATH_TO_TMX)), config);
+        new Lwjgl3Application(new GameDesktopLauncher(), config);
     }
 }
