@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.util.TileMovement;
 
+import java.util.Set;
+
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
@@ -66,12 +68,34 @@ public class Tank {
         tileMovement.moveRectangleBetweenTileCenters(position.getRectangle(), position.getCoordinates(), playerDestinationCoordinates, playerMovementProgress);
     }
 
-    public boolean canMoveUp(GridPoint2 obstacle) {
-        return !obstacle.equals(incrementedY(position.getCoordinates()));
+    public boolean canMoveUp(Set<GridPoint2> obstacles) {
+        boolean result = true;
+        for (GridPoint2 coords : obstacles) {
+            result = result && !coords.equals(incrementedY(position.getCoordinates()));
+        }
+        return result;
     }
-    public boolean canMoveDown(GridPoint2 obstacle) { return !obstacle.equals(decrementedY(position.getCoordinates())); }
-    public boolean canMoveLeft(GridPoint2 obstacle) { return !obstacle.equals(decrementedX(position.getCoordinates())); }
-    public boolean canMoveRight(GridPoint2 obstacle) { return !obstacle.equals(incrementedX(position.getCoordinates())); }
+    public boolean canMoveDown(Set<GridPoint2> obstacles) {
+        boolean result = true;
+        for (GridPoint2 coords : obstacles) {
+            result = result && !coords.equals(decrementedY(position.getCoordinates()));
+        }
+        return result;
+    }
+    public boolean canMoveLeft(Set<GridPoint2> obstacles) {
+        boolean result = true;
+        for (GridPoint2 coords : obstacles) {
+            result = result && !coords.equals(decrementedX(position.getCoordinates()));
+        }
+        return result;
+    }
+    public boolean canMoveRight(Set<GridPoint2> obstacles) {
+        boolean result = true;
+        for (GridPoint2 coords : obstacles) {
+            result = result && !coords.equals(incrementedX(position.getCoordinates()));
+        }
+        return result;
+    }
 
     public void draw(Batch batch) {
         // render player
