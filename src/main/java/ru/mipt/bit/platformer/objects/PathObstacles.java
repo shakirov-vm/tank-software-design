@@ -40,4 +40,7 @@ public class PathObstacles implements MapInitObjects {
     public GridPoint2 getStartedCoordinates() {
         return player;
     }
+    public Set<GridPoint2> getStartedEnemies() {
+        return null;
+    }
 }

@@ -8,4 +8,5 @@ public interface MapInitObjects {
 
     Set<GridPoint2> getObstacles();
     GridPoint2 getStartedCoordinates();
+    Set<GridPoint2> getStartedEnemies();
 }

@@ -40,6 +40,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Map map;
     private Set<Tree> obstacles = new HashSet<Tree>();
     private Tank player;
+    private Set<Tank> enemies = new HashSet<Tank>();
     private MapInitObjects initObjects;
 
     private TapHandler keys;
@@ -70,10 +71,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         for(GridPoint2 coord : initObjects.getObstacles()) {
             obstacles.add(new Tree(TREE_PATH_TO_PNG, coord.x, coord.y));
         }
+        for(GridPoint2 coord : initObjects.getStartedEnemies()) {
+            enemies.add(new Tank(TANK_PATH_TO_PNG, coord.x, coord.y));
+        }
         player = new Tank(TANK_PATH_TO_PNG, initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y);
         tileMovement = map.createTileMovement();
 
-        keys = new TapHandler(player, initObjects.getObstacles());
+        keys = new TapHandler(player, initObjects.getObstacles(), initObjects.getStartedEnemies());
 
         for(Tree tree: obstacles) {
             tree.rectToCenter(map.getGroundLayer());
@@ -93,6 +97,11 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         player.movePic(tileMovement);
         player.movementProgess(deltaTime, MOVEMENT_SPEED);
+        for (Tank tank: enemies) {
+            tank.movePic(tileMovement);
+            tank.movementProgess(deltaTime, MOVEMENT_SPEED);
+        }
+
         map.render();
 
         batch.begin();
@@ -100,6 +109,9 @@ public class GameDesktopLauncher implements ApplicationListener {
         player.draw(batch);
         for (Tree tree : obstacles) {
             tree.draw(batch);
+        }
+        for (Tank tank : enemies) {
+            tank.draw(batch);
         }
 
         batch.end();
