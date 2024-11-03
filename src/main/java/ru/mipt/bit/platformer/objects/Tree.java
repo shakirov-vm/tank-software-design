@@ -7,37 +7,45 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class Tree {
+public class Tree implements Obstacle {
 
-    private final Texture greenTreeTexture;
-    private final TextureRegion treeObstacleGraphics;
-    private final GridPoint2 treeObstacleCoordinates;
-    private final Rectangle treeObstacleRectangle;
+    // Graphics
+    private final TextureWrap greenTree;
+
+    // Model position
+    private final Position position;
 
     public Tree(String pathTreePng, int x, int y) {
 
-        greenTreeTexture = new Texture(pathTreePng);
-        treeObstacleGraphics = new TextureRegion(greenTreeTexture);
-        treeObstacleCoordinates = new GridPoint2(x, y);
-        treeObstacleRectangle = createBoundingRectangle(treeObstacleGraphics);
+        greenTree = new ModelTexture(pathTreePng);
+        position = new ModelPosition(x, y, greenTree.getRegion(), Direction.RIGHT.getAngle());
     }
     public GridPoint2 getCoords() {
-        return treeObstacleCoordinates;
+        return position.getCoordinates();
     }
 
     public void draw(Batch batch) {
         // render tree obstacle
-        drawTextureRegionUnscaled(batch, treeObstacleGraphics, treeObstacleRectangle, 0f);
+        drawTextureRegionUnscaled(batch, greenTree.getRegion(), position.getRectangle(), position.getRotation());
     }
 
     public void rectToCenter(TiledMapTileLayer groundLayer) {
 
-        moveRectangleAtTileCenter(groundLayer, treeObstacleRectangle, treeObstacleCoordinates);
+        moveRectangleAtTileCenter(groundLayer, position.getRectangle(), position.getCoordinates());
+    }
+
+    public Set<GridPoint2> getProhobitedCoordinates() {
+        HashSet<GridPoint2> Coordinates = new HashSet<>(Arrays.asList(position.getCoordinates()));
+        return Coordinates;
     }
 
     public void Dispose() {
-        greenTreeTexture.dispose();
+        greenTree.dispose();
     }
 }

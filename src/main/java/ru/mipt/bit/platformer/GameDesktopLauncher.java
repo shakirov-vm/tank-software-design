@@ -4,51 +4,100 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.objects.Map;
-import ru.mipt.bit.platformer.objects.Movements;
-import ru.mipt.bit.platformer.objects.Tree;
-import ru.mipt.bit.platformer.objects.Tank;
+import com.badlogic.gdx.utils.Null;
+import ru.mipt.bit.platformer.objects.*;
 import ru.mipt.bit.platformer.util.TileMovement;
 
-import static com.badlogic.gdx.Input.Keys.*;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
-import static com.badlogic.gdx.math.MathUtils.isEqual;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.incrementedY;
 
 public class GameDesktopLauncher implements ApplicationListener {
 
     private static final float MOVEMENT_SPEED = 0.4f;
 
+    private static final int SCREEN_WIDTH = 1280;
+    private static final int SCREEN_HEIGHT = 1024;
+
+    private static final int TILES_WIDTH = 10;
+    private static final int TILES_HEIGHT = 9;
+
+    private static final String TREE_PATH_TO_PNG = "images/greenTree.png";
+    private static final String TANK_PATH_TO_PNG = "images/tank_blue.png";
+
+    private static final String MAP_PATH_TO_TMX = "level.tmx";
+    private static final String OBSTACLES_PATH_TO_TMX = "src/main/resources/obstacles.txt";
+
     private Batch batch;
     private TileMovement tileMovement;
 
     private Map map;
-    private Tree singleTree;
+    private Set<Tree> trees = new HashSet<Tree>();
     private Tank player;
+    private Set<Tank> enemies = new HashSet<Tank>();
+    private Set<Obstacle> obstacles = new HashSet<Obstacle>();
+    private MapInitObjects initObjects;
+
+    private TapHandler keys;
+
+    private enum obstaclesCreateMode {
+        RANDOM_OBSTACLES,
+        OBSTACLES_FROM_FILE,
+    }
+
+    private obstaclesCreateMode obstaclesMode;
+
+    public GameDesktopLauncher() {
+        obstaclesMode = obstaclesCreateMode.RANDOM_OBSTACLES;
+        initObjects = new RandomObjects(TILES_WIDTH, TILES_HEIGHT);
+
+    }
+    public GameDesktopLauncher(Path toObstaclesCoords) throws IOException {
+        obstaclesMode = obstaclesCreateMode.OBSTACLES_FROM_FILE;
+        initObjects = new PathObstacles(toObstaclesCoords);
+    }
 
     @Override
     public void create() {
 
         batch = new SpriteBatch();
 
-        map = new Map(batch, "level.tmx");
-        singleTree = new Tree("images/greenTree.png", 4, 3);
-        player = new Tank("images/tank_blue.png", 5, 2);
+        map = new Map(batch, MAP_PATH_TO_TMX);
+        for(GridPoint2 coord : initObjects.getObstacles()) {
+            Tree tree = new Tree(TREE_PATH_TO_PNG, coord.x, coord.y);
+            trees.add(tree);
+            obstacles.add(tree);
+        }
+
+        for(GridPoint2 coord : initObjects.getStartedEnemies()) {
+            Tank enemy = new Tank(TANK_PATH_TO_PNG, coord.x, coord.y);
+            enemies.add(enemy);
+            obstacles.add(enemy);
+            enemy.setMoveCommand(new EnemyMoveCommand(enemy));
+        }
+        player = new Tank(TANK_PATH_TO_PNG, initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y);
+        obstacles.add(player);
+        player.setMoveCommand(new PlayerMoveCommand(player));
+
+        for (Tank enemy : enemies) {
+            ((EnemyMoveCommand) enemy.getMoveCommand()).setObstacles(obstacles);
+        }
+        ((PlayerMoveCommand) player.getMoveCommand()).setObstacles(obstacles);
+
         tileMovement = map.createTileMovement();
 
-        singleTree.rectToCenter(map.getGroundLayer());
+        keys = new TapHandler(player);
+
+        for(Tree tree: trees) {
+            tree.rectToCenter(map.getGroundLayer());
+        }
     }
 
     @Override
@@ -60,26 +109,29 @@ public class GameDesktopLauncher implements ApplicationListener {
         // get time passed since the last render
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W))
-            player.MoveTank(player.canMoveUp(singleTree.getCoords()), 90f, Movements.UP);
+        // set actions to player
+        keys.handle();
 
-        if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A))
-            player.MoveTank(player.canMoveLeft(singleTree.getCoords()), -180f, Movements.LEFT);
-
-        if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S))
-            player.MoveTank(player.canMoveDown(singleTree.getCoords()), -90f, Movements.DOWN);
-
-        if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D))
-            player.MoveTank(player.canMoveRight(singleTree.getCoords()), 0f, Movements.RIGHT);
-
+        player.move();
         player.movePic(tileMovement);
         player.movementProgess(deltaTime, MOVEMENT_SPEED);
+        for (Tank tank: enemies) {
+            tank.move();
+            tank.movePic(tileMovement);
+            tank.movementProgess(deltaTime, MOVEMENT_SPEED);
+        }
+
         map.render();
 
         batch.begin();
 
         player.draw(batch);
-        singleTree.draw(batch);
+        for (Tree tree : trees) {
+            tree.draw(batch);
+        }
+        for (Tank tank : enemies) {
+            tank.draw(batch);
+        }
 
         batch.end();
 
@@ -104,15 +156,18 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
         player.dispose();
-        singleTree.Dispose();
+        for (Tree tree : trees) {
+            tree.Dispose();
+        }
         map.dispose();
         batch.dispose();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         // level width: 10 tiles x 128px, height: 8 tiles x 128px
-        config.setWindowedMode(1280, 1024);
+        config.setWindowedMode(SCREEN_WIDTH, SCREEN_HEIGHT);
+//        new Lwjgl3Application(new GameDesktopLauncher(Paths.get(OBSTACLES_PATH_TO_TMX)), config);
         new Lwjgl3Application(new GameDesktopLauncher(), config);
     }
 }
