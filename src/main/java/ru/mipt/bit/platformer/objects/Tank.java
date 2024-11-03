@@ -93,7 +93,6 @@ public class Tank implements Obstacle {
         return moved;
     }
     public void movementProgess(float deltaTime, float movement_speed) {
-        System.out.println(playerMovementProgress);
         playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, movement_speed);
         if (isEqual(playerMovementProgress, 1f)) {
             // record that the player has reached his/her destination

@@ -71,15 +71,19 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         map = new Map(batch, MAP_PATH_TO_TMX);
         for(GridPoint2 coord : initObjects.getObstacles()) {
-            trees.add(new Tree(TREE_PATH_TO_PNG, coord.x, coord.y));
+            Tree tree = new Tree(TREE_PATH_TO_PNG, coord.x, coord.y);
+            trees.add(tree);
+            obstacles.add(tree);
         }
 
         for(GridPoint2 coord : initObjects.getStartedEnemies()) {
             Tank enemy = new Tank(TANK_PATH_TO_PNG, coord.x, coord.y);
             enemies.add(enemy);
+            obstacles.add(enemy);
             enemy.setMoveCommand(new EnemyMoveCommand(enemy));
         }
         player = new Tank(TANK_PATH_TO_PNG, initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y);
+        obstacles.add(player);
         player.setMoveCommand(new PlayerMoveCommand(player));
 
         for (Tank enemy : enemies) {
