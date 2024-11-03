@@ -7,6 +7,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.Null;
 import ru.mipt.bit.platformer.objects.*;
 import ru.mipt.bit.platformer.util.TileMovement;
 
@@ -38,9 +39,10 @@ public class GameDesktopLauncher implements ApplicationListener {
     private TileMovement tileMovement;
 
     private Map map;
-    private Set<Tree> obstacles = new HashSet<Tree>();
+    private Set<Tree> trees = new HashSet<Tree>();
     private Tank player;
     private Set<Tank> enemies = new HashSet<Tank>();
+    private Set<Obstacle> obstacles = new HashSet<Obstacle>();
     private MapInitObjects initObjects;
 
     private TapHandler keys;
@@ -69,17 +71,27 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         map = new Map(batch, MAP_PATH_TO_TMX);
         for(GridPoint2 coord : initObjects.getObstacles()) {
-            obstacles.add(new Tree(TREE_PATH_TO_PNG, coord.x, coord.y));
+            trees.add(new Tree(TREE_PATH_TO_PNG, coord.x, coord.y));
         }
+
         for(GridPoint2 coord : initObjects.getStartedEnemies()) {
-            enemies.add(new Tank(TANK_PATH_TO_PNG, coord.x, coord.y));
+            Tank enemy = new Tank(TANK_PATH_TO_PNG, coord.x, coord.y);
+            enemies.add(enemy);
+            enemy.setMoveCommand(new EnemyMoveCommand(enemy));
         }
         player = new Tank(TANK_PATH_TO_PNG, initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y);
+        player.setMoveCommand(new PlayerMoveCommand(player));
+
+        for (Tank enemy : enemies) {
+            ((EnemyMoveCommand) enemy.getMoveCommand()).setObstacles(obstacles);
+        }
+        ((PlayerMoveCommand) player.getMoveCommand()).setObstacles(obstacles);
+
         tileMovement = map.createTileMovement();
 
-        keys = new TapHandler(player, initObjects.getObstacles(), initObjects.getStartedEnemies());
+        keys = new TapHandler(player);
 
-        for(Tree tree: obstacles) {
+        for(Tree tree: trees) {
             tree.rectToCenter(map.getGroundLayer());
         }
     }
@@ -93,11 +105,14 @@ public class GameDesktopLauncher implements ApplicationListener {
         // get time passed since the last render
         float deltaTime = Gdx.graphics.getDeltaTime();
 
+        // set actions to player
         keys.handle();
 
+        player.move();
         player.movePic(tileMovement);
         player.movementProgess(deltaTime, MOVEMENT_SPEED);
         for (Tank tank: enemies) {
+            tank.move();
             tank.movePic(tileMovement);
             tank.movementProgess(deltaTime, MOVEMENT_SPEED);
         }
@@ -107,7 +122,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         batch.begin();
 
         player.draw(batch);
-        for (Tree tree : obstacles) {
+        for (Tree tree : trees) {
             tree.draw(batch);
         }
         for (Tank tank : enemies) {
@@ -137,7 +152,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
         player.dispose();
-        for (Tree tree : obstacles) {
+        for (Tree tree : trees) {
             tree.Dispose();
         }
         map.dispose();

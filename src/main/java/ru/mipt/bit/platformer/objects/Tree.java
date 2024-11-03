@@ -7,9 +7,13 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class Tree {
+public class Tree implements Obstacle {
 
     // Graphics
     private final TextureWrap greenTree;
@@ -20,7 +24,7 @@ public class Tree {
     public Tree(String pathTreePng, int x, int y) {
 
         greenTree = new ModelTexture(pathTreePng);
-        position = new ModelPosition(x, y, greenTree.getRegion(), Direction.RIGHT_DIRECTION);
+        position = new ModelPosition(x, y, greenTree.getRegion(), Direction.RIGHT.getAngle());
     }
     public GridPoint2 getCoords() {
         return position.getCoordinates();
@@ -34,6 +38,11 @@ public class Tree {
     public void rectToCenter(TiledMapTileLayer groundLayer) {
 
         moveRectangleAtTileCenter(groundLayer, position.getRectangle(), position.getCoordinates());
+    }
+
+    public Set<GridPoint2> getProhobitedCoordinates() {
+        HashSet<GridPoint2> Coordinates = new HashSet<>(Arrays.asList(position.getCoordinates()));
+        return Coordinates;
     }
 
     public void Dispose() {
