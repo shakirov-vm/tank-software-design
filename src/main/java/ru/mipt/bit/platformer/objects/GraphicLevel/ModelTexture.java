@@ -1,8 +1,8 @@
-package ru.mipt.bit.platformer.objects;
+package ru.mipt.bit.platformer.objects.GraphicLevel;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class ModelTexture implements TextureWrap {
+public class ModelTexture {
 
     public final com.badlogic.gdx.graphics.Texture Texture_;
     public final TextureRegion TextureRegion_;

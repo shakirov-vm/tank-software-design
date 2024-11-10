@@ -1,18 +1,18 @@
-package ru.mipt.bit.platformer.objects;
+package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static ru.mipt.bit.platformer.objects.Direction.randomDirection;
+import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirection;
 
 public class EnemyMoveCommand implements Command {
 
     Set<Obstacle> obstacles;
-    Tank enemy;
+    TankLogModel enemy;
 
-    public EnemyMoveCommand(Tank enemy_) {
+    public EnemyMoveCommand(TankLogModel enemy_) {
         enemy = enemy_;
     }
     public void setObstacles(Set<Obstacle> obstacles_) {
@@ -22,15 +22,15 @@ public class EnemyMoveCommand implements Command {
     }
 
     public boolean run() {
-        HashSet<GridPoint2> prohibitedCoordinates = new HashSet<>();
+        HashSet<GridPoint2> bannedCoordinates = new HashSet<>();
         for (Obstacle obstacle : obstacles) {
-            Set<GridPoint2> oneObstacleProhibitedCoordinates = obstacle.getProhobitedCoordinates();
-            for (GridPoint2 coordinate : oneObstacleProhibitedCoordinates) {
-                prohibitedCoordinates.add(coordinate);
+            Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
+            for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
+                bannedCoordinates.add(coordinate);
             }
         }
 
         enemy.setNextDirection(randomDirection());
-        return enemy.MoveTank(prohibitedCoordinates);
+        return enemy.MoveTank(bannedCoordinates);
     }
 }

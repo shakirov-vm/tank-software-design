@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects;
+package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -8,9 +8,9 @@ import java.util.Set;
 public class PlayerMoveCommand implements Command {
 
     Set<Obstacle> obstacles;
-    Tank player;
+    TankLogModel player;
 
-    public PlayerMoveCommand(Tank player_) {
+    public PlayerMoveCommand(TankLogModel player_) {
         player = player_;
     }
     public void setObstacles(Set<Obstacle> obstacles_) {
@@ -20,13 +20,13 @@ public class PlayerMoveCommand implements Command {
     }
 
     public boolean run() {
-        HashSet<GridPoint2> prohibitedCoordinates = new HashSet<>();
+        HashSet<GridPoint2> bannedCoordinates = new HashSet<>();
         for (Obstacle obstacle : obstacles) {
-            Set<GridPoint2> oneObstacleProhibitedCoordinates = obstacle.getProhobitedCoordinates();
-            for (GridPoint2 coordinate : oneObstacleProhibitedCoordinates) {
-                prohibitedCoordinates.add(coordinate);
+            Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
+            for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
+                bannedCoordinates.add(coordinate);
             }
         }
-        return player.MoveTank(prohibitedCoordinates);
+        return player.MoveTank(bannedCoordinates);
     }
 }

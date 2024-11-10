@@ -1,16 +1,12 @@
-package ru.mipt.bit.platformer.objects;
+package ru.mipt.bit.platformer.objects.LogicLevel.InitMap;
 
 import com.badlogic.gdx.math.GridPoint2;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class RandomObjects implements MapInitObjects {
+public class MapInitRandom implements MapInitObjects {
 
     public final int MIN_ENEMIES = 3;
     public final int MAX_ENEMIES = 5;
@@ -25,9 +21,9 @@ public class RandomObjects implements MapInitObjects {
         return random.nextInt(max - min) + min;
     }
 
-    public RandomObjects(int tilesWidth, int tilesHeight) {
+    public MapInitRandom(int tilesWidth, int tilesHeight) {
 
-        int numObjects = getRandomNumberUsingNextInt(0, tilesWidth * tilesHeight - MAX_ENEMIES);
+        int numObjects = getRandomNumberUsingNextInt(0, (tilesWidth * tilesHeight - MAX_ENEMIES) / 2);
 
         System.out.println(numObjects);
         Random random = new Random();

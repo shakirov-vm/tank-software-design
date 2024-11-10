@@ -1,7 +1,6 @@
-package ru.mipt.bit.platformer.objects;
+package ru.mipt.bit.platformer.objects.GraphicLevel;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -9,8 +8,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
 import ru.mipt.bit.platformer.util.TileMovement;
 
-import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
+import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
+import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;
 
 public class Map {
 

@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects;
+package ru.mipt.bit.platformer.objects.LogicLevel.InitMap;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -10,12 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PathObstacles implements MapInitObjects {
+public class MapInitPath implements MapInitObjects {
 
     Set<GridPoint2> obstacles = new HashSet<GridPoint2>();
     GridPoint2 player;
 
-    public PathObstacles(Path pathToObstacles) throws IOException {
+    public MapInitPath(Path pathToObstacles) throws IOException {
 
         List<String> lines = Files.readAllLines(pathToObstacles, StandardCharsets.UTF_8);
 

@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects;
+package ru.mipt.bit.platformer.objects.LogicLevel;
 import java.util.Random;
 
 public enum Direction {
@@ -9,7 +9,7 @@ public enum Direction {
     RIGHT (0f);
 
     private float angle;
-    private Direction(final float angle) {
+    Direction(final float angle) {
         this.angle = angle;
     }
 

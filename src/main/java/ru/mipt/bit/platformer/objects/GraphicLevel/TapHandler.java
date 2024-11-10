@@ -1,23 +1,19 @@
-package ru.mipt.bit.platformer.objects;
+package ru.mipt.bit.platformer.objects.GraphicLevel;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.objects.LogicLevel.Direction;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static com.badlogic.gdx.Input.Keys.*;
-import static com.badlogic.gdx.Input.Keys.D;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 
 public class TapHandler {
 
-    private final Tank player;
-    private final Set<Tank> enemies;
+    private final TankGraphModel player;
+    private final Set<TankGraphModel> enemies;
     private boolean isDrawHealthBar = false;
 
-    public TapHandler(Tank player_, Set<Tank> enemies_) {
+    public TapHandler(TankGraphModel player_, Set<TankGraphModel> enemies_) {
         player = player_;
         enemies = enemies_;
     }
@@ -25,21 +21,21 @@ public class TapHandler {
     public void handle() {
 
         if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W))
-            player.setNextDirection(Direction.UP);
+            player.getTank().getNextPosition().setDirection(Direction.UP);
 
         if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A))
-            player.setNextDirection(Direction.LEFT);
+            player.getTank().getNextPosition().setDirection(Direction.LEFT);
 
         if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S))
-            player.setNextDirection(Direction.DOWN);
+            player.getTank().getNextPosition().setDirection(Direction.DOWN);
 
         if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D))
-            player.setNextDirection(Direction.RIGHT);
+            player.getTank().getNextPosition().setDirection(Direction.RIGHT);
 
         if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(L)) {
             isDrawHealthBar = !isDrawHealthBar;
             player.setDrawHealth(isDrawHealthBar);
-            for (Tank tank : enemies) {
+            for (TankGraphModel tank : enemies) {
                 tank.setDrawHealth(isDrawHealthBar);
             }
         }
