@@ -1,7 +1,13 @@
 package ru.mipt.bit.platformer.objects;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Rectangle;
+import ru.mipt.bit.platformer.util.GdxGameUtils;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.Arrays;
@@ -25,6 +31,8 @@ public class Tank implements Obstacle {
     private final GridPoint2 DestinationCoordinates;
     private Direction nextDirection;
     private float playerMovementProgress = 1f;
+
+    private boolean drawHealth = true;
 
     void setNextDirection(Direction direction) {
         nextDirection = direction;
@@ -134,9 +142,39 @@ public class Tank implements Obstacle {
         return result;
     }
 
+    private TextureRegion getHealthbarTexture(float relativeHealth) {
+        var pixmap = new Pixmap(90, 20, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.RED);
+        pixmap.fillRectangle(0, 0, 90, 20);
+        pixmap.setColor(Color.GREEN);
+        pixmap.fillRectangle(0, 0, (int) (90 * relativeHealth), 20);
+        var texture = new Texture(pixmap);
+        pixmap.dispose();
+        return new TextureRegion(texture);
+    }
+
+    private Rectangle createRectangle() {
+        var rectangle = new Rectangle(position.getRectangle());
+        rectangle.y += 90;
+        return rectangle;
+    }
+
+    private void renderHealthbar(Batch batch) {
+        var health = 100;
+        var healthbarTexture = getHealthbarTexture(health);
+        var rectangle = createRectangle();
+        GdxGameUtils.drawTextureRegionUnscaled(batch, healthbarTexture, rectangle, 0f);
+    }
+
+    public void setDrawHealth(boolean isDraw) {
+        drawHealth = isDraw;
+    }
+
     public void draw(Batch batch) {
         // render player
         drawTextureRegionUnscaled(batch, blueTank.getRegion(), position.getRectangle(), position.getRotation());
+        if (drawHealth)
+            renderHealthbar(batch);
     }
 
     public Set<GridPoint2> getProhobitedCoordinates() {

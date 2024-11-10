@@ -93,7 +93,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         tileMovement = map.createTileMovement();
 
-        keys = new TapHandler(player);
+        keys = new TapHandler(player, enemies);
 
         for(Tree tree: trees) {
             tree.rectToCenter(map.getGroundLayer());

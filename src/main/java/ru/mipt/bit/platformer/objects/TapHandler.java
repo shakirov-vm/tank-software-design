@@ -14,9 +14,12 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 public class TapHandler {
 
     private final Tank player;
+    private final Set<Tank> enemies;
+    private boolean isDrawHealthBar = false;
 
-    public TapHandler(Tank player_) {
+    public TapHandler(Tank player_, Set<Tank> enemies_) {
         player = player_;
+        enemies = enemies_;
     }
 
     public void handle() {
@@ -32,5 +35,13 @@ public class TapHandler {
 
         if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D))
             player.setNextDirection(Direction.RIGHT);
+
+        if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(L)) {
+            isDrawHealthBar = !isDrawHealthBar;
+            player.setDrawHealth(isDrawHealthBar);
+            for (Tank tank : enemies) {
+                tank.setDrawHealth(isDrawHealthBar);
+            }
+        }
     }
 }
