@@ -7,11 +7,10 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.objects.GraphicLevel.Map;
-import ru.mipt.bit.platformer.objects.GraphicLevel.TankGraphModel;
-import ru.mipt.bit.platformer.objects.GraphicLevel.TapHandler;
-import ru.mipt.bit.platformer.objects.GraphicLevel.TreeGraphModel;
+import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.EnemyMoveCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerMoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
@@ -21,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Flow;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
@@ -44,11 +44,11 @@ public class GameDesktopLauncher implements ApplicationListener {
     private TileMovement tileMovement;
 
     private Map map;
-    private Set<TreeGraphModel> trees = new HashSet<TreeGraphModel>();
-    private TankGraphModel player;
-    private Set<TankGraphModel> enemies = new HashSet<TankGraphModel>();
     private Set<Obstacle> obstacles = new HashSet<Obstacle>();
     private MapInitObjects initObjects;
+
+    private Publisher publisher;
+    private Listener listener;
 
     private TapHandler keys;
 
@@ -71,27 +71,46 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void create() {
 
+        Set<TreeGraphModel> trees = new HashSet<TreeGraphModel>();
+        TankGraphModel player;
+        Set<TankGraphModel> enemies = new HashSet<TankGraphModel>();
+
+        Set<TreeLogModel> treeModels = new HashSet<TreeLogModel>();
+        TankLogModel playerModel;
+        Set<TankLogModel> enemyModels = new HashSet<TankLogModel>();
+
         batch = new SpriteBatch();
 
-        map = new Map(batch, MAP_PATH_TO_TMX);
-        for(GridPoint2 coord : initObjects.getObstacles()) {
+        for (GridPoint2 coord : initObjects.getObstacles()) {
             TreeLogModel treeModel = new TreeLogModel(coord.x, coord.y);
             TreeGraphModel tree = new TreeGraphModel(TREE_PATH_TO_PNG, treeModel);
+
+            treeModels.add(treeModel);
             trees.add(tree);
+
             obstacles.add(treeModel);
         }
 
-        for(GridPoint2 coord : initObjects.getStartedEnemies()) {
+        for (GridPoint2 coord : initObjects.getStartedEnemies()) {
             TankLogModel enemyModel = new TankLogModel(coord.x, coord.y);
             TankGraphModel enemy = new TankGraphModel(TANK_PATH_TO_PNG, enemyModel);
+
+            enemyModels.add(enemyModel);
             enemies.add(enemy);
+
             obstacles.add(enemyModel);
             enemyModel.setMoveCommand(new EnemyMoveCommand(enemyModel));
         }
-        TankLogModel playerModel = new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y);
+
+        playerModel = new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y);
         player = new TankGraphModel(TANK_PATH_TO_PNG, playerModel);
+
         obstacles.add(playerModel);
         playerModel.setMoveCommand(new PlayerMoveCommand(playerModel));
+
+        publisher = new Publisher(playerModel, treeModels, enemyModels);
+        listener = new Listener(player, trees, enemies);
+        map = new Map(batch, MAP_PATH_TO_TMX);
 
         for (TankGraphModel enemy : enemies) {
             ((EnemyMoveCommand) enemy.getTank().getMoveCommand()).setObstacles(obstacles);
@@ -119,10 +138,10 @@ public class GameDesktopLauncher implements ApplicationListener {
         // set actions to player
         keys.handle();
 
-        player.getTank().move();
-        player.movePic(tileMovement);
-        player.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
-        for (TankGraphModel tank: enemies) {
+        listener.getPlayer().getTank().move();
+        listener.getPlayer().movePic(tileMovement);
+        listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
+        for (TankGraphModel tank: listener.getEnemies()) {
             tank.getTank().move();
             tank.movePic(tileMovement);
             tank.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
@@ -132,11 +151,11 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         batch.begin();
 
-        player.draw(batch);
-        for (TreeGraphModel tree : trees) {
+        listener.getPlayer().draw(batch);
+        for (TreeGraphModel tree : listener.getTrees()) {
             tree.draw(batch);
         }
-        for (TankGraphModel tank : enemies) {
+        for (TankGraphModel tank : listener.getEnemies()) {
             tank.draw(batch);
         }
 
@@ -162,8 +181,8 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
-        player.dispose();
-        for (TreeGraphModel tree : trees) {
+        listener.getPlayer().dispose();
+        for (TreeGraphModel tree : listener.getTrees()) {
             tree.Dispose();
         }
         map.dispose();

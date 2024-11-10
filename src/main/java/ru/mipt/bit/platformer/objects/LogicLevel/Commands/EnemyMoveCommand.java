@@ -1,21 +1,25 @@
-package ru.mipt.bit.platformer.objects.LogicLevel;
+package ru.mipt.bit.platformer.objects.LogicLevel.Commands;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.objects.LogicLevel.Obstacle;
+import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class PlayerMoveCommand implements Command {
+import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirection;
+
+public class EnemyMoveCommand implements Command {
 
     Set<Obstacle> obstacles;
-    TankLogModel player;
+    TankLogModel enemy;
 
-    public PlayerMoveCommand(TankLogModel player_) {
-        player = player_;
+    public EnemyMoveCommand(TankLogModel enemy_) {
+        enemy = enemy_;
     }
     public void setObstacles(Set<Obstacle> obstacles_) {
         obstacles = new HashSet<>(obstacles_);
-        boolean removed = obstacles.remove(player);
+        boolean removed = obstacles.remove(enemy);
         assert (removed);
     }
 
@@ -27,6 +31,8 @@ public class PlayerMoveCommand implements Command {
                 bannedCoordinates.add(coordinate);
             }
         }
-        return player.MoveTank(bannedCoordinates);
+
+        enemy.setNextDirection(randomDirection());
+        return enemy.MoveTank(bannedCoordinates);
     }
 }

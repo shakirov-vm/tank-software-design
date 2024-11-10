@@ -1,7 +1,6 @@
 package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,47 +9,25 @@ import java.util.Set;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class TankLogModel implements Obstacle {
+public class BulletLogModel {
 
     // Model position
     private final Position currPosition;
     private final Position nextPosition;
 
-    private Command moveCommand;
-
     private float playerMovementProgress = 1f;
-    private int health = 100;
 
-    public TankLogModel(int x, int y) {
-        currPosition = new Position(x, y, Direction.RIGHT);
-        nextPosition = new Position(x, y, Direction.RIGHT);
-    }
-
-    public void setNextDirection(Direction direction) {
-        nextPosition.setDirection(direction);
-    }
-
-    public void setMoveCommand(Command moveCommand_) {
-        moveCommand = moveCommand_;
-    }
-    public Command getMoveCommand() {
-        return moveCommand;
+    public BulletLogModel(int x, int y, Direction initDirection) {
+        currPosition = new Position(x, y, initDirection);
+        nextPosition = new Position(x, y, initDirection);
     }
 
     public float getPlayerMovementProgress() {
         return playerMovementProgress;
     }
 
-    public int getHealth() {
-        return health;
-    }
-
     public Position getCurrPosition() { return currPosition; }
     public Position getNextPosition() { return nextPosition; }
-
-    public void move() {
-        moveCommand.run();
-    }
 
     public boolean MoveTank(Set<GridPoint2> obstaclesCoordinates) {
 

@@ -6,7 +6,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
+import ru.mipt.bit.platformer.objects.LogicLevel.Obstacle;
 import ru.mipt.bit.platformer.util.TileMovement;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;
@@ -18,7 +22,6 @@ public class Map {
     private TiledMapTileLayer groundLayer;
 
     public Map(Batch batch, String pathLevelPng) {
-
         // load level tiles
         level = new TmxMapLoader().load(pathLevelPng);
         levelRenderer = createSingleLayerMapRenderer(level, batch);
