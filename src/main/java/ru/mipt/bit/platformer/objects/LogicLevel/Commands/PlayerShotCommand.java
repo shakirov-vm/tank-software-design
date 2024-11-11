@@ -5,7 +5,7 @@ import ru.mipt.bit.platformer.objects.LogicLevel.BulletLogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Publisher;
 import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
 
-public class PlayerShotCommand {
+public class PlayerShotCommand implements Command {
 
     Publisher publisher;
 

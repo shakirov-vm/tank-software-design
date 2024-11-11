@@ -7,7 +7,7 @@ import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
 
 import java.util.Random;
 
-public class EnemyShotCommand {
+public class EnemyShotCommand implements Command {
 
     Publisher publisher;
 

@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Null;
+import ru.mipt.bit.platformer.objects.GraphicLevel.Listener;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,8 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.incrementedX;
 
 public class Publisher {
 
+    Listener listener;
+
     private TankLogModel player;
     private Set<TreeLogModel> trees = new HashSet<>();
     private Set<TankLogModel> enemies = new HashSet<>();
@@ -19,16 +22,19 @@ public class Publisher {
 
     private static final String BULLET_PATH_TO_PNG = "images/bullet.png";
 
-    public Publisher() {}
+    public Publisher(Listener listener_) { listener = listener_; }
 
     public void addPlayer(TankLogModel player_) {
         player = player_;
+        listener.addPlayer(player);
     }
     public void addTree(TreeLogModel tree) {
         trees.add(tree);
+        listener.addTree(tree);
     }
     public void addEnemy(TankLogModel enemy) {
         enemies.add(enemy);
+        listener.addEnemy(enemy);
     }
 
     public void tryAddBullet(BulletLogModel bullet) {
