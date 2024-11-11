@@ -38,7 +38,8 @@ public class Publisher {
     }
 
     public void tryAddBullet(BulletLogModel bullet) {
-
+        bullets.add(bullet);
+        listener.addBullet(bullet);
     }
 
     private Set<GridPoint2> getObstaclesForTank(TankLogModel tank) {
@@ -139,6 +140,46 @@ public class Publisher {
                 tank.setPlayerMovementProgress(0f);
             }
             tank.getCurrPosition().setDirection(tank.getNextPosition().getDirection());
+        }
+        return moved;
+    }
+    public boolean tryMoveBullet(BulletLogModel bullet) {
+
+        boolean moved = false;
+
+        // Вся эта логика должна остаться в moveTank, чтобы не раскрывать лишнего, publisher должен лишь отвечать на вопрос
+        // двигать или не двигать!
+        if (isEqual(bullet.getPlayerMovementProgress(), 1f)) {
+            switch (bullet.getNextPosition().getDirection()) {
+                case UP:
+  //                  if (canMoveUp(obstacles, bullet.getCurrPosition())) {
+                        bullet.getNextPosition().getCoordinates().y++;
+                        moved = true;
+    //                }
+                    break;
+                case DOWN:
+  //                  if (canMoveDown(obstacles, bullet.getCurrPosition())) {
+                        bullet.getNextPosition().getCoordinates().y--;
+                        moved = true;
+    //                }
+                    break;
+                case LEFT:
+  //                  if (canMoveLeft(obstacles, bullet.getCurrPosition())) {
+                        bullet.getNextPosition().getCoordinates().x--;
+                        moved = true;
+    //                }
+                    break;
+                case RIGHT:
+  //                  if (canMoveRight(obstacles, bullet.getCurrPosition())) {
+                        bullet.getNextPosition().getCoordinates().x++;
+                        moved = true;
+    //                }
+                    break;
+            }
+            if (moved) {
+//                bullet.setPlayerMovementProgress(0f);
+            }
+            bullet.getCurrPosition().setDirection(bullet.getNextPosition().getDirection());
         }
         return moved;
     }

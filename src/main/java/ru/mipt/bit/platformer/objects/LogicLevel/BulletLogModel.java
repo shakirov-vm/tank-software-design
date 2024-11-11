@@ -1,6 +1,8 @@
 package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.BulletMoveCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,11 +17,14 @@ public class BulletLogModel {
     private final Position currPosition;
     private final Position nextPosition;
 
+    private BulletMoveCommand moveCommand;
+
     private float playerMovementProgress = 1f;
 
-    public BulletLogModel(int x, int y, Direction initDirection) {
-        currPosition = new Position(x, y, initDirection);
-        nextPosition = new Position(x, y, initDirection);
+    public BulletLogModel(Position newPosition, BulletMoveCommand moveCommand_) {
+        currPosition = new Position(newPosition);
+        nextPosition = new Position(newPosition);
+        moveCommand = moveCommand_;
     }
 
     public float getPlayerMovementProgress() {
@@ -102,6 +107,10 @@ public class BulletLogModel {
             result = result && !coords.equals(incrementedX(currPosition.getCoordinates()));
         }
         return result;
+    }
+
+    public void move() {
+        moveCommand.run(this);
     }
 
     public Set<GridPoint2> getBannedCoordinates() {

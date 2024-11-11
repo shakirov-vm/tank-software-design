@@ -10,9 +10,9 @@ import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.EnemyMoveCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.EnemyShotCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.EnemyShootCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerMoveCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerShotCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerShootCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
@@ -20,8 +20,6 @@ import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
@@ -78,11 +76,11 @@ public class GameDesktopLauncher implements ApplicationListener {
         }
 
         for (GridPoint2 coord : initObjects.getStartedEnemies()) {
-            publisher.addEnemy(new TankLogModel(coord.x, coord.y, new EnemyMoveCommand(publisher), new EnemyShotCommand(publisher)));
+            publisher.addEnemy(new TankLogModel(coord.x, coord.y, new EnemyMoveCommand(publisher), new EnemyShootCommand(publisher)));
         }
 
         publisher.addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y,
-                new PlayerMoveCommand(publisher), new PlayerShotCommand(publisher)));
+                new PlayerMoveCommand(publisher), new PlayerShootCommand(publisher)));
 
         map = new Map(batch, MAP_PATH_TO_TMX);
 
@@ -97,6 +95,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     @Override
     public void render() {
+
         // clear the screen
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
@@ -112,8 +111,14 @@ public class GameDesktopLauncher implements ApplicationListener {
         listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         for (TankGraphModel tank: listener.getEnemies()) {
             tank.getTank().move();
+            tank.getTank().shoot();
             tank.movePic(tileMovement);
             tank.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
+        }
+        for (BulletGraphModel bullet: listener.getBullets()) {
+            bullet.getBullet().move();
+            bullet.movePic(tileMovement);
+            bullet.getBullet().movementProgess(deltaTime, MOVEMENT_SPEED);
         }
 
         map.render();
@@ -126,6 +131,9 @@ public class GameDesktopLauncher implements ApplicationListener {
         }
         for (TankGraphModel tank : listener.getEnemies()) {
             tank.draw(batch);
+        }
+        for (BulletGraphModel bullet : listener.getBullets()) {
+            bullet.draw(batch);
         }
 
         batch.end();

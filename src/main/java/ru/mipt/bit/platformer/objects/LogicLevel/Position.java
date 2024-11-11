@@ -7,9 +7,11 @@ public class Position {
     private Direction direction;
 
     public Position(int x, int y, Direction initDirection) {
-
         coordinates = new GridPoint2(x, y);
         direction = initDirection;
+    }
+    public Position(Position copy) {
+        this(copy.coordinates.x, copy.coordinates.y, copy.direction);
     }
 
     public void setCoordinates(GridPoint2 newCoordinates) {

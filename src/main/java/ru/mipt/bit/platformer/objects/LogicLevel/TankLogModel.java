@@ -33,10 +33,6 @@ public class TankLogModel implements Obstacle {
         nextPosition.setDirection(direction);
     }
 
-    public Command getMoveCommand() {
-        return moveCommand;
-    }
-
     public float getPlayerMovementProgress() {
         return playerMovementProgress;
     }
