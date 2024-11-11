@@ -17,22 +17,22 @@ public class TankLogModel implements Obstacle {
     private final Position nextPosition;
 
     private Command moveCommand;
+    private Command shootCommand;
 
     private float playerMovementProgress = 1f;
     private int health = 100;
 
-    public TankLogModel(int x, int y) {
+    public TankLogModel(int x, int y, Command moveCommand_, Command shootCommand_) {
         currPosition = new Position(x, y, Direction.RIGHT);
         nextPosition = new Position(x, y, Direction.RIGHT);
+        moveCommand = moveCommand_;
+        shootCommand = shootCommand_;
     }
 
     public void setNextDirection(Direction direction) {
         nextPosition.setDirection(direction);
     }
 
-    public void setMoveCommand(Command moveCommand_) {
-        moveCommand = moveCommand_;
-    }
     public Command getMoveCommand() {
         return moveCommand;
     }
@@ -40,22 +40,28 @@ public class TankLogModel implements Obstacle {
     public float getPlayerMovementProgress() {
         return playerMovementProgress;
     }
+    public void setPlayerMovementProgress(float nextPMP) {
+        playerMovementProgress = nextPMP;
+    }
 
     public int getHealth() {
         return health;
     }
 
     public Position getCurrPosition() { return currPosition; }
-    public Position getNextPosition() { return nextPosition; }
+    public Position getNextPosition() { return nextPosition; } // Do we need Rotation?
 
     public void move() {
-        moveCommand.run();
+        moveCommand.run(this);
     }
-
-    public boolean MoveTank(Set<GridPoint2> obstaclesCoordinates) {
-
+    public void shoot() {
+        shootCommand.run(this);
+    }
+    // Remove this
+    public boolean moveTank() {
+/*
         boolean moved = false;
-
+        // Вернуть сюда логику перемещения, но moved получать из publisher
         if (isEqual(playerMovementProgress, 1f)) {
             switch (nextPosition.getDirection()) {
                 case UP:
@@ -89,6 +95,9 @@ public class TankLogModel implements Obstacle {
             currPosition.setDirection(nextPosition.getDirection());
         }
         return moved;
+
+ */
+        return false;
     }
     public void movementProgess(float deltaTime, float movement_speed) {
         playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, movement_speed);
@@ -98,6 +107,7 @@ public class TankLogModel implements Obstacle {
         }
     }
 
+    // Remove this
     public boolean canMoveUp(Set<GridPoint2> obstacles) {
         boolean result = true;
         for (GridPoint2 coords : obstacles) {

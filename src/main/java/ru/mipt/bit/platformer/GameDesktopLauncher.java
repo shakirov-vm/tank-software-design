@@ -9,8 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.EnemyMoveCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerMoveCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
@@ -44,7 +43,6 @@ public class GameDesktopLauncher implements ApplicationListener {
     private TileMovement tileMovement;
 
     private Map map;
-    private Set<Obstacle> obstacles = new HashSet<Obstacle>();
     private MapInitObjects initObjects;
 
     private Publisher publisher;
@@ -71,6 +69,8 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void create() {
 
+        publisher = new Publisher();
+
         Set<TreeGraphModel> trees = new HashSet<TreeGraphModel>();
         TankGraphModel player;
         Set<TankGraphModel> enemies = new HashSet<TankGraphModel>();
@@ -87,35 +87,25 @@ public class GameDesktopLauncher implements ApplicationListener {
 
             treeModels.add(treeModel);
             trees.add(tree);
-
-            obstacles.add(treeModel);
+            publisher.addTree(treeModel);
         }
 
         for (GridPoint2 coord : initObjects.getStartedEnemies()) {
-            TankLogModel enemyModel = new TankLogModel(coord.x, coord.y);
+            TankLogModel enemyModel = new TankLogModel(coord.x, coord.y, new EnemyMoveCommand(publisher), new EnemyShotCommand(publisher));
             TankGraphModel enemy = new TankGraphModel(TANK_PATH_TO_PNG, enemyModel);
 
             enemyModels.add(enemyModel);
             enemies.add(enemy);
-
-            obstacles.add(enemyModel);
-            enemyModel.setMoveCommand(new EnemyMoveCommand(enemyModel));
+            publisher.addEnemy(enemyModel);
         }
 
-        playerModel = new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y);
+        playerModel = new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y,
+                                new PlayerMoveCommand(publisher), new PlayerShotCommand(publisher));
         player = new TankGraphModel(TANK_PATH_TO_PNG, playerModel);
+        publisher.addPlayer(playerModel);
 
-        obstacles.add(playerModel);
-        playerModel.setMoveCommand(new PlayerMoveCommand(playerModel));
-
-        publisher = new Publisher(playerModel, treeModels, enemyModels);
         listener = new Listener(player, trees, enemies);
         map = new Map(batch, MAP_PATH_TO_TMX);
-
-        for (TankGraphModel enemy : enemies) {
-            ((EnemyMoveCommand) enemy.getTank().getMoveCommand()).setObstacles(obstacles);
-        }
-        ((PlayerMoveCommand) player.getTank().getMoveCommand()).setObstacles(obstacles);
 
         tileMovement = map.createTileMovement();
 
@@ -135,10 +125,10 @@ public class GameDesktopLauncher implements ApplicationListener {
         // get time passed since the last render
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        // set actions to player
+        // SET ACTIONS TO PLAYER (MOVE AND SHOOT)
         keys.handle();
 
-        listener.getPlayer().getTank().move();
+        // Must be player movement there???
         listener.getPlayer().movePic(tileMovement);
         listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         for (TankGraphModel tank: listener.getEnemies()) {

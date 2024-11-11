@@ -20,24 +20,36 @@ public class TapHandler {
 
     public void handle() {
 
-        if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W))
+        // Из-за этого всегда двигается!!
+        if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W)) {
             player.getTank().getNextPosition().setDirection(Direction.UP);
+            player.getTank().move();
+        }
 
-        if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A))
+        if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A)) {
             player.getTank().getNextPosition().setDirection(Direction.LEFT);
+            player.getTank().move();
+        }
 
-        if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S))
+        if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S)) {
             player.getTank().getNextPosition().setDirection(Direction.DOWN);
+            player.getTank().move();
+        }
 
-        if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D))
+        if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D)) {
             player.getTank().getNextPosition().setDirection(Direction.RIGHT);
+            player.getTank().move();
+        }
 
-        if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(L)) {
+        if (Gdx.input.isKeyPressed(L)) {
             isDrawHealthBar = !isDrawHealthBar;
             player.setDrawHealth(isDrawHealthBar);
             for (TankGraphModel tank : enemies) {
                 tank.setDrawHealth(isDrawHealthBar);
             }
+        }
+        if (Gdx.input.isKeyPressed(SPACE)) {
+            player.getTank().shoot();
         }
     }
 }
