@@ -24,10 +24,6 @@ public class TankLogModel implements Obstacle, Movable {
         nextPosition = new Position(x, y, Direction.RIGHT);
     }
 
-    public void setNextDirection(Direction direction) {
-        ;
-    }
-
     public float getPlayerMovementProgress() {
         return playerMovementProgress;
     }

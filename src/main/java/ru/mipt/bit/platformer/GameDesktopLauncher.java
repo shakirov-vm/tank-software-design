@@ -118,7 +118,9 @@ public class GameDesktopLauncher implements ApplicationListener {
             tank.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         }
         for (BulletGraphModel bullet: listener.getBullets()) {
-            bullet.getBullet().move();
+            if (publisher.tryMoveBullet(bullet.getBullet())) {
+               bullet.getBullet().move();
+            }
             bullet.movePic(tileMovement);
             bullet.getBullet().movementProgess(deltaTime, MOVEMENT_SPEED);
         }

@@ -19,8 +19,7 @@ public class PlayerShootCommand implements Command {
     public void execute() {
 
         GridPoint2 nextCoordinates = player.getNextPosition().getCoordinates();
-        BulletLogModel bullet = new BulletLogModel(new Position(nextCoordinates.x, nextCoordinates.y, player.getCurrPosition().getDirection()),
-                                                    new BulletMoveCommand(publisher));
+        BulletLogModel bullet = new BulletLogModel(new Position(nextCoordinates.x, nextCoordinates.y, player.getCurrPosition().getDirection()));
         publisher.tryAddBullet(bullet);
     }
 }

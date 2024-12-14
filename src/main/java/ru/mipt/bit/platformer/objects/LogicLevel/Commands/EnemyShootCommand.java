@@ -30,8 +30,7 @@ public class EnemyShootCommand implements Command {
 
         if (getRandomNumberUsingNextInt(0, FREQUENCY) % FREQUENCY == 0) {
             GridPoint2 nextCoordinates = enemy.getNextPosition().getCoordinates();
-            BulletLogModel bullet = new BulletLogModel(new Position(nextCoordinates.x, nextCoordinates.y, enemy.getCurrPosition().getDirection()),
-                                    new BulletMoveCommand(publisher));
+            BulletLogModel bullet = new BulletLogModel(new Position(nextCoordinates.x, nextCoordinates.y, enemy.getCurrPosition().getDirection()));
             publisher.tryAddBullet(bullet);
         }
     }

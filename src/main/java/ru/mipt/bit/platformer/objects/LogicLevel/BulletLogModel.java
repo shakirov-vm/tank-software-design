@@ -1,7 +1,6 @@
 package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.BulletMoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 
 import java.util.Arrays;
@@ -17,14 +16,35 @@ public class BulletLogModel {
     private final Position currPosition;
     private final Position nextPosition;
 
-    private BulletMoveCommand moveCommand;
-
     private float playerMovementProgress = 1f;
 
-    public BulletLogModel(Position newPosition, BulletMoveCommand moveCommand_) {
+    public BulletLogModel(Position newPosition) {
         currPosition = new Position(newPosition);
         nextPosition = new Position(newPosition);
-        moveCommand = moveCommand_;
+    }
+
+
+    public GridPoint2 getNextCoordinates(Direction direction) {
+        switch (direction) {
+            case UP:
+                return incrementedY(currPosition.getCoordinates());
+            case DOWN:
+                return decrementedY(currPosition.getCoordinates());
+            case LEFT:
+                return decrementedX(currPosition.getCoordinates());
+            case RIGHT:
+                return incrementedX(currPosition.getCoordinates());
+            default:
+                return new GridPoint2(0, 0);
+        }
+    }
+    public void setPlayerMovementProgress(float nextPMP) {
+        playerMovementProgress = nextPMP;
+    }
+
+    public void move() {
+        setPlayerMovementProgress(0f);
+        nextPosition.setCoordinates(getNextCoordinates(getCurrPosition().getDirection()));
     }
 
     public float getPlayerMovementProgress() {
@@ -34,44 +54,6 @@ public class BulletLogModel {
     public Position getCurrPosition() { return currPosition; }
     public Position getNextPosition() { return nextPosition; }
 
-    public boolean MoveTank(Set<GridPoint2> obstaclesCoordinates) {
-
-        boolean moved = false;
-
-        if (isEqual(playerMovementProgress, 1f)) {
-            switch (nextPosition.getDirection()) {
-                case UP:
-                    if (canMoveUp(obstaclesCoordinates)) {
-                        nextPosition.getCoordinates().y++;
-                        moved = true;
-                    }
-                    break;
-                case DOWN:
-                    if (canMoveDown(obstaclesCoordinates)) {
-                        nextPosition.getCoordinates().y--;
-                        moved = true;
-                    }
-                    break;
-                case LEFT:
-                    if (canMoveLeft(obstaclesCoordinates)) {
-                        nextPosition.getCoordinates().x--;
-                        moved = true;
-                    }
-                    break;
-                case RIGHT:
-                    if (canMoveRight(obstaclesCoordinates)) {
-                        nextPosition.getCoordinates().x++;
-                        moved = true;
-                    }
-                    break;
-            }
-            if (moved) {
-                playerMovementProgress = 0f;
-            }
-            currPosition.setDirection(nextPosition.getDirection());
-        }
-        return moved;
-    }
     public void movementProgess(float deltaTime, float movement_speed) {
         playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, movement_speed);
         if (isEqual(playerMovementProgress, 1f)) {
@@ -80,41 +62,4 @@ public class BulletLogModel {
         }
     }
 
-    public boolean canMoveUp(Set<GridPoint2> obstacles) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(incrementedY(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    public boolean canMoveDown(Set<GridPoint2> obstacles) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(decrementedY(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    public boolean canMoveLeft(Set<GridPoint2> obstacles) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(decrementedX(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    public boolean canMoveRight(Set<GridPoint2> obstacles) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(incrementedX(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-
-    public void move() {
-        moveCommand.run(this);
-    }
-
-    public Set<GridPoint2> getBannedCoordinates() {
-        HashSet<GridPoint2> Coordinates = new HashSet<>(Arrays.asList(currPosition.getCoordinates(), nextPosition.getCoordinates()));
-        return Coordinates;
-    }
 }
