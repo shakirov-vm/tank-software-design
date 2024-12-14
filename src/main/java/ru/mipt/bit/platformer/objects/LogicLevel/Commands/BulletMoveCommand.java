@@ -1,14 +1,14 @@
 package ru.mipt.bit.platformer.objects.LogicLevel.Commands;
 
 import ru.mipt.bit.platformer.objects.LogicLevel.BulletLogModel;
-import ru.mipt.bit.platformer.objects.LogicLevel.Publisher;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogicLevel;
 
 // Must implement command?
 public class BulletMoveCommand {
 
-    Publisher publisher;
+    LogicLevel publisher;
 
-    public BulletMoveCommand(Publisher publisher_) {
+    public BulletMoveCommand(LogicLevel publisher_) {
         publisher = publisher_;
     }
 

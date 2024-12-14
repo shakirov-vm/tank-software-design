@@ -10,7 +10,7 @@ import java.util.Set;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class TankLogModel implements Obstacle {
+public class TankLogModel implements Obstacle, Movable {
 
     // Model position
     private final Position currPosition;
@@ -25,7 +25,7 @@ public class TankLogModel implements Obstacle {
     }
 
     public void setNextDirection(Direction direction) {
-        nextPosition.setDirection(direction);
+        ;
     }
 
     public float getPlayerMovementProgress() {
@@ -42,51 +42,10 @@ public class TankLogModel implements Obstacle {
     public Position getCurrPosition() { return currPosition; }
     public Position getNextPosition() { return nextPosition; } // Do we need Rotation?
 
-    public void move() {
+    public void move(Direction direction) {
+        nextPosition.setDirection(direction);
     }
     public void shoot() {
-    }
-    // Remove this
-    public boolean moveTank() {
-/*
-        boolean moved = false;
-        // Вернуть сюда логику перемещения, но moved получать из publisher
-        if (isEqual(playerMovementProgress, 1f)) {
-            switch (nextPosition.getDirection()) {
-                case UP:
-                    if (canMoveUp(obstaclesCoordinates)) {
-                        nextPosition.getCoordinates().y++;
-                        moved = true;
-                    }
-                    break;
-                case DOWN:
-                    if (canMoveDown(obstaclesCoordinates)) {
-                        nextPosition.getCoordinates().y--;
-                        moved = true;
-                    }
-                    break;
-                case LEFT:
-                    if (canMoveLeft(obstaclesCoordinates)) {
-                        nextPosition.getCoordinates().x--;
-                        moved = true;
-                    }
-                    break;
-                case RIGHT:
-                    if (canMoveRight(obstaclesCoordinates)) {
-                        nextPosition.getCoordinates().x++;
-                        moved = true;
-                    }
-                    break;
-            }
-            if (moved) {
-                playerMovementProgress = 0f;
-            }
-            currPosition.setDirection(nextPosition.getDirection());
-        }
-        return moved;
-
- */
-        return false;
     }
     public void movementProgess(float deltaTime, float movement_speed) {
         playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, movement_speed);

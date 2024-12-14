@@ -9,9 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.EnemyMoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.EnemyShootCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerMoveCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerShootCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
+import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirection;
 
 public class GameDesktopLauncher implements ApplicationListener {
 
@@ -42,7 +42,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Map map;
     private MapInitObjects initObjects;
 
-    private Publisher publisher;
+    private LogicLevel publisher;
     private Listener listener;
 
     private TapHandler keys;
@@ -67,7 +67,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void create() {
 
         listener = new Listener();
-        publisher = new Publisher(listener);
+        publisher = new LogicLevel(listener);
 
         batch = new SpriteBatch();
 
@@ -109,7 +109,10 @@ public class GameDesktopLauncher implements ApplicationListener {
         listener.getPlayer().movePic(tileMovement);
         listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         for (TankGraphModel tank: listener.getEnemies()) {
-            (new EnemyMoveCommand(publisher, tank.getTank())).execute();
+            tank.getTank().getNextPosition().setDirection(randomDirection());
+            if (publisher.tryMoveTank(tank.getTank())) {
+                (new MoveCommand((Movable) tank.getTank(), randomDirection())).execute();
+            }
             (new EnemyShootCommand(publisher, tank.getTank())).execute();
             tank.movePic(tileMovement);
             tank.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
