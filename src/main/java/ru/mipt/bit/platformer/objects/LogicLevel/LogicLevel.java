@@ -100,47 +100,27 @@ public class LogicLevel {
     }
     // Перед вызовом tryMoveTank устанавливается nextDirection, в который надо двигаться
     // Перенести всё сюда из moveTank и tapHandler
-    public boolean tryMoveTank(TankLogModel tank) {
+    public boolean tryMoveTank(TankLogModel tank, Direction direction) {
 
         Set<GridPoint2> obstacles = getObstaclesForTank(tank);
 
-        boolean moved = false;
-
-        // Вся эта логика должна остаться в moveTank, чтобы не раскрывать лишнего, publisher должен лишь отвечать на вопрос
-        // двигать или не двигать!
         if (isEqual(tank.getPlayerMovementProgress(), 1f)) {
-            switch (tank.getNextPosition().getDirection()) {
+            switch (direction) {
                 case UP:
-                    if (canMoveUp(obstacles, tank.getCurrPosition())) {
-                        tank.getNextPosition().getCoordinates().y++;
-                        moved = true;
-                    }
-                    break;
+                    if (canMoveUp(obstacles, tank.getCurrPosition())) return true;
+                    else return false;
                 case DOWN:
-                    if (canMoveDown(obstacles, tank.getCurrPosition())) {
-                        tank.getNextPosition().getCoordinates().y--;
-                        moved = true;
-                    }
-                    break;
+                    if (canMoveDown(obstacles, tank.getCurrPosition())) return true;
+                    else return false;
                 case LEFT:
-                    if (canMoveLeft(obstacles, tank.getCurrPosition())) {
-                        tank.getNextPosition().getCoordinates().x--;
-                        moved = true;
-                    }
-                    break;
+                    if (canMoveLeft(obstacles, tank.getCurrPosition())) return true;
+                    else return false;
                 case RIGHT:
-                    if (canMoveRight(obstacles, tank.getCurrPosition())) {
-                        tank.getNextPosition().getCoordinates().x++;
-                        moved = true;
-                    }
-                    break;
+                    if (canMoveRight(obstacles, tank.getCurrPosition())) return true;
+                    else return false;
             }
-            if (moved) {
-                tank.setPlayerMovementProgress(0f);
-            }
-            tank.getCurrPosition().setDirection(tank.getNextPosition().getDirection());
         }
-        return moved;
+        return false;
     }
     public boolean tryMoveBullet(BulletLogModel bullet) {
 

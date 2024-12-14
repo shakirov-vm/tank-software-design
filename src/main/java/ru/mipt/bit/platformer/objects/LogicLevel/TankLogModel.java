@@ -42,8 +42,24 @@ public class TankLogModel implements Obstacle, Movable {
     public Position getCurrPosition() { return currPosition; }
     public Position getNextPosition() { return nextPosition; } // Do we need Rotation?
 
+     public GridPoint2 getNextCoordinates(Direction direction) {
+        switch (direction) {
+            case UP:
+                return incrementedY(currPosition.getCoordinates());
+            case DOWN:
+                return decrementedY(currPosition.getCoordinates());
+            case LEFT:
+                return decrementedX(currPosition.getCoordinates());
+            case RIGHT:
+                return incrementedX(currPosition.getCoordinates());
+            default:
+                return new GridPoint2(0, 0);
+        }
+    }
     public void move(Direction direction) {
-        nextPosition.setDirection(direction);
+        setPlayerMovementProgress(0f);
+        nextPosition.setCoordinates(getNextCoordinates(direction));
+        currPosition.setDirection(direction);
     }
     public void shoot() {
     }

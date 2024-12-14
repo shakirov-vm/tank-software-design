@@ -109,9 +109,9 @@ public class GameDesktopLauncher implements ApplicationListener {
         listener.getPlayer().movePic(tileMovement);
         listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         for (TankGraphModel tank: listener.getEnemies()) {
-            tank.getTank().getNextPosition().setDirection(randomDirection());
-            if (publisher.tryMoveTank(tank.getTank())) {
-                (new MoveCommand((Movable) tank.getTank(), randomDirection())).execute();
+            Direction direction = randomDirection();
+            if (publisher.tryMoveTank(tank.getTank(), direction)) {
+                (new MoveCommand((Movable) tank.getTank(), direction)).execute();
             }
             (new EnemyShootCommand(publisher, tank.getTank())).execute();
             tank.movePic(tileMovement);

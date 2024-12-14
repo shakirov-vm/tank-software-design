@@ -27,32 +27,32 @@ public class TapHandler {
 
     public void handle() {
 
-        // Из-за этого всегда двигается!!
+        boolean movePressed = false;
+        Direction nextDirection = Direction.LEFT;
+
         if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W)) {
-            player.getTank().getNextPosition().setDirection(Direction.UP);
-            if (publisher.tryMoveTank(player.getTank())) {
-                (new MoveCommand((Movable) player.getTank(), Direction.UP)).execute();
-            }
+            movePressed = true;
+            nextDirection = Direction.UP;
         }
 
         if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A)) {
-            player.getTank().getNextPosition().setDirection(Direction.LEFT);
-            if (publisher.tryMoveTank(player.getTank())) {
-                (new MoveCommand((Movable) player.getTank(), Direction.LEFT)).execute();
-            }
+            movePressed = true;
+            nextDirection = Direction.LEFT;
         }
 
         if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S)) {
-            player.getTank().getNextPosition().setDirection(Direction.DOWN);
-            if (publisher.tryMoveTank(player.getTank())) {
-                (new MoveCommand((Movable) player.getTank(), Direction.DOWN)).execute();
-            }
+            movePressed = true;
+            nextDirection = Direction.DOWN;
         }
 
         if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D)) {
-            player.getTank().getNextPosition().setDirection(Direction.RIGHT);
-            if (publisher.tryMoveTank(player.getTank())) {
-                (new MoveCommand((Movable) player.getTank(), Direction.RIGHT)).execute();
+            movePressed = true;
+            nextDirection = Direction.RIGHT;
+        }
+        if (movePressed) {
+            player.getTank().getCurrPosition().setDirection(nextDirection);
+            if (publisher.tryMoveTank(player.getTank(), nextDirection)) {
+                (new MoveCommand((Movable) player.getTank(), nextDirection)).execute();
             }
         }
 
