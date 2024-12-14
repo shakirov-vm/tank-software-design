@@ -16,17 +16,12 @@ public class TankLogModel implements Obstacle {
     private final Position currPosition;
     private final Position nextPosition;
 
-    private Command moveCommand;
-    private Command shootCommand;
-
     private float playerMovementProgress = 1f;
     private int health = 100;
 
-    public TankLogModel(int x, int y, Command moveCommand_, Command shootCommand_) {
+    public TankLogModel(int x, int y) {
         currPosition = new Position(x, y, Direction.RIGHT);
         nextPosition = new Position(x, y, Direction.RIGHT);
-        moveCommand = moveCommand_;
-        shootCommand = shootCommand_;
     }
 
     public void setNextDirection(Direction direction) {
@@ -48,10 +43,8 @@ public class TankLogModel implements Obstacle {
     public Position getNextPosition() { return nextPosition; } // Do we need Rotation?
 
     public void move() {
-        moveCommand.run(this);
     }
     public void shoot() {
-        shootCommand.run(this);
     }
     // Remove this
     public boolean moveTank() {

@@ -76,17 +76,16 @@ public class GameDesktopLauncher implements ApplicationListener {
         }
 
         for (GridPoint2 coord : initObjects.getStartedEnemies()) {
-            publisher.addEnemy(new TankLogModel(coord.x, coord.y, new EnemyMoveCommand(publisher), new EnemyShootCommand(publisher)));
+            publisher.addEnemy(new TankLogModel(coord.x, coord.y));
         }
 
-        publisher.addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y,
-                new PlayerMoveCommand(publisher), new PlayerShootCommand(publisher)));
+        publisher.addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y));
 
         map = new Map(batch, MAP_PATH_TO_TMX);
 
         tileMovement = map.createTileMovement();
 
-        keys = new TapHandler(listener.getPlayer(), listener.getEnemies());
+        keys = new TapHandler(listener.getPlayer(), listener.getEnemies(), publisher);
 
         for (TreeGraphModel tree: listener.getTrees()) {
             tree.rectToCenter(map.getGroundLayer());
@@ -110,8 +109,8 @@ public class GameDesktopLauncher implements ApplicationListener {
         listener.getPlayer().movePic(tileMovement);
         listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         for (TankGraphModel tank: listener.getEnemies()) {
-            tank.getTank().move();
-            tank.getTank().shoot();
+            (new EnemyMoveCommand(publisher, tank.getTank())).execute();
+            (new EnemyShootCommand(publisher, tank.getTank())).execute();
             tank.movePic(tileMovement);
             tank.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         }

@@ -9,10 +9,14 @@ import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
 public class PlayerShootCommand implements Command {
 
     Publisher publisher;
+    TankLogModel player;
 
-    public PlayerShootCommand(Publisher publisher_) { publisher = publisher_; }
+    public PlayerShootCommand(Publisher publisher_, TankLogModel player_) {
+        publisher = publisher_;
+        player = player_;
+    }
 
-    public boolean run(TankLogModel player) {
+    public boolean execute() {
 
         GridPoint2 nextCoordinates = player.getNextPosition().getCoordinates();
         BulletLogModel bullet = new BulletLogModel(new Position(nextCoordinates.x, nextCoordinates.y, player.getCurrPosition().getDirection()),

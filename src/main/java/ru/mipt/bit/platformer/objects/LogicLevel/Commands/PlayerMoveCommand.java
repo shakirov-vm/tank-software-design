@@ -6,12 +6,14 @@ import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
 public class PlayerMoveCommand implements Command {
 
     Publisher publisher;
+    TankLogModel player;
 
-    public PlayerMoveCommand(Publisher publisher_) {
+    public PlayerMoveCommand(Publisher publisher_, TankLogModel player_) {
         publisher = publisher_;
+        player = player_;
     }
 
-    public boolean run(TankLogModel player) {
+    public boolean execute() {
 
         // NextDirection set TapHandler
         if (publisher.tryMoveTank(player)) {

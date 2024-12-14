@@ -8,12 +8,14 @@ import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirectio
 public class EnemyMoveCommand implements Command {
 
     Publisher publisher;
+    TankLogModel enemy;
 
-    public EnemyMoveCommand(Publisher publisher_) {
+    public EnemyMoveCommand(Publisher publisher_, TankLogModel enemy_) {
         publisher = publisher_;
+        enemy = enemy_;
     }
 
-    public boolean run(TankLogModel enemy) {
+    public boolean execute() {
 
         enemy.setNextDirection(randomDirection());
         if (publisher.tryMoveTank(enemy)) {
