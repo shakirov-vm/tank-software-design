@@ -1,14 +1,13 @@
 package ru.mipt.bit.platformer.objects.LogicLevel.Generators;
 
 import com.badlogic.gdx.Gdx;
-import ru.mipt.bit.platformer.objects.GraphicLevel.TankGraphModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.ShootCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Direction;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Direction;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogicLevel;
-import ru.mipt.bit.platformer.objects.LogicLevel.Movable;
-import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogInterfaces.Movable;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TankLogModel;
 
 import java.util.HashSet;
 import java.util.Set;

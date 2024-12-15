@@ -3,6 +3,11 @@ package ru.mipt.bit.platformer.objects.LogicLevel;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.Drawer;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.BulletLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TankLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TreeLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Direction;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Position;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -65,6 +70,34 @@ public class LogicLevel {
         bullets.add(bullet);
         drawer.addBullet(bullet);
     }
+    public boolean tryMoveTank(TankLogModel tank, Direction direction) {
+
+        Set<GridPoint2> obstacles = getObstaclesForTank(tank);
+
+        if (isEqual(tank.getPlayerMovementProgress(), 1f)) {
+            switch (direction) {
+                case UP:
+                    if (canMoveUp(obstacles, tank.getCurrPosition())) return true;
+                    else return false;
+                case DOWN:
+                    if (canMoveDown(obstacles, tank.getCurrPosition())) return true;
+                    else return false;
+                case LEFT:
+                    if (canMoveLeft(obstacles, tank.getCurrPosition())) return true;
+                    else return false;
+                case RIGHT:
+                    if (canMoveRight(obstacles, tank.getCurrPosition())) return true;
+                    else return false;
+            }
+        }
+        return false;
+    }
+    public boolean tryMoveBullet(BulletLogModel bullet) {
+        if (isEqual(bullet.getPlayerMovementProgress(), 1f)) {
+            return true;
+        }
+        return false;
+    }
 
     private Set<GridPoint2> getObstaclesForTank(TankLogModel tank) {
 
@@ -95,7 +128,6 @@ public class LogicLevel {
 
         return bannedCoordinates;
     }
-
     private boolean canMoveUp(Set<GridPoint2> obstacles, Position currPosition) {
         boolean result = true;
         for (GridPoint2 coords : obstacles) {
@@ -123,34 +155,5 @@ public class LogicLevel {
             result = result && !coords.equals(incrementedX(currPosition.getCoordinates()));
         }
         return result;
-    }
-
-    public boolean tryMoveTank(TankLogModel tank, Direction direction) {
-
-        Set<GridPoint2> obstacles = getObstaclesForTank(tank);
-
-        if (isEqual(tank.getPlayerMovementProgress(), 1f)) {
-            switch (direction) {
-                case UP:
-                    if (canMoveUp(obstacles, tank.getCurrPosition())) return true;
-                    else return false;
-                case DOWN:
-                    if (canMoveDown(obstacles, tank.getCurrPosition())) return true;
-                    else return false;
-                case LEFT:
-                    if (canMoveLeft(obstacles, tank.getCurrPosition())) return true;
-                    else return false;
-                case RIGHT:
-                    if (canMoveRight(obstacles, tank.getCurrPosition())) return true;
-                    else return false;
-            }
-        }
-        return false;
-    }
-    public boolean tryMoveBullet(BulletLogModel bullet) {
-        if (isEqual(bullet.getPlayerMovementProgress(), 1f)) {
-            return true;
-        }
-        return false;
     }
 }

@@ -3,9 +3,15 @@ package ru.mipt.bit.platformer.objects.GraphicLevel;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import ru.mipt.bit.platformer.objects.LogicLevel.BulletLogModel;
-import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
-import ru.mipt.bit.platformer.objects.LogicLevel.TreeLogModel;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces.Drawable;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces.MovablePic;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphModels.BulletGraphModel;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphModels.DrawableHealthDecorator;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphModels.TankGraphModel;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphModels.TreeGraphModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.BulletLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TankLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TreeLogModel;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.HashSet;
@@ -62,7 +68,6 @@ public class Drawer {
     }
 
     public void moveGraphicPics(float deltaTime) {
-
         for (MovablePic movablePic : movablePics) {
             movablePic.movePic(tileMovement);
             movablePic.changeMovementProgess(deltaTime, MOVEMENT_SPEED);

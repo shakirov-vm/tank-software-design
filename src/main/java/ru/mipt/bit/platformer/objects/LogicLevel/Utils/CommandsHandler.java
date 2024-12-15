@@ -1,8 +1,9 @@
-package ru.mipt.bit.platformer.objects.LogicLevel;
+package ru.mipt.bit.platformer.objects.LogicLevel.Utils;
 
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 import ru.mipt.bit.platformer.objects.LogicLevel.Generators.AICommandsGenerator;
 import ru.mipt.bit.platformer.objects.LogicLevel.Generators.TapHandler;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogicLevel;
 
 import java.util.Set;
 

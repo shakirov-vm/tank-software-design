@@ -1,7 +1,7 @@
 package ru.mipt.bit.platformer.objects.LogicLevel.Commands;
 
-import ru.mipt.bit.platformer.objects.LogicLevel.Direction;
-import ru.mipt.bit.platformer.objects.LogicLevel.Movable;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Direction;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogInterfaces.Movable;
 
 public class MoveCommand implements Command {
 

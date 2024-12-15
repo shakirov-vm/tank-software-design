@@ -1,14 +1,12 @@
-package ru.mipt.bit.platformer.objects.GraphicLevel;
+package ru.mipt.bit.platformer.objects.GraphicLevel.GraphModels;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.objects.LogicLevel.Position;
-import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
-import ru.mipt.bit.platformer.util.GdxGameUtils;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces.Drawable;
+import ru.mipt.bit.platformer.objects.GraphicLevel.Utils.ModelTexture;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces.MovablePic;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Position;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TankLogModel;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;

@@ -1,10 +1,7 @@
 package ru.mipt.bit.platformer.objects.LogicLevel.Commands;
 
-import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.objects.LogicLevel.BulletLogModel;
-import ru.mipt.bit.platformer.objects.LogicLevel.Position;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogicLevel;
-import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TankLogModel;
 
 public class ShootCommand implements Command {
 

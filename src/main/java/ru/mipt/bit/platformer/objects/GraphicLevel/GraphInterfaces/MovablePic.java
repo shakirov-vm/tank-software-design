@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects.GraphicLevel;
+package ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces;
 
 import ru.mipt.bit.platformer.util.TileMovement;
 

@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects.GraphicLevel;
+package ru.mipt.bit.platformer.objects.GraphicLevel.GraphModels;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -6,7 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.objects.LogicLevel.Liveable;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces.Drawable;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogInterfaces.Liveable;
 import ru.mipt.bit.platformer.util.GdxGameUtils;
 
 import java.lang.reflect.Method;
@@ -16,7 +17,7 @@ public class DrawableHealthDecorator implements Drawable {
     private final Drawable drawable;
     private boolean drawHealth = true;
 
-    DrawableHealthDecorator(Drawable drawable_) {
+    public DrawableHealthDecorator(Drawable drawable_) {
         drawable = drawable_;
     }
 

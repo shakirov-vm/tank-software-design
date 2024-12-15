@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects.LogicLevel;
+package ru.mipt.bit.platformer.objects.LogicLevel.Utils;
 import java.util.Random;
 
 public enum Direction {

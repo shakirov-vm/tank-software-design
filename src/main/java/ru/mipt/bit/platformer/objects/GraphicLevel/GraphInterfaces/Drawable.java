@@ -1,8 +1,7 @@
-package ru.mipt.bit.platformer.objects.GraphicLevel;
+package ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.objects.LogicLevel.Liveable;
 
 public interface Drawable {
     public void draw(Batch batch);

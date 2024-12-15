@@ -1,7 +1,12 @@
-package ru.mipt.bit.platformer.objects.LogicLevel;
+package ru.mipt.bit.platformer.objects.LogicLevel.LogModels;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
+import ru.mipt.bit.platformer.objects.LogicLevel.*;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogInterfaces.Liveable;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogInterfaces.Movable;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogInterfaces.Obstacle;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Direction;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Position;
 
 import java.util.Arrays;
 import java.util.HashSet;

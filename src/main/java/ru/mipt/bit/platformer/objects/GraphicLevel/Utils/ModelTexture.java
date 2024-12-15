@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects.GraphicLevel;
+package ru.mipt.bit.platformer.objects.GraphicLevel.Utils;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

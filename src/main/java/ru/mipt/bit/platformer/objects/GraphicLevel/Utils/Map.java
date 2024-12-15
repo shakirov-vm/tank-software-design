@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects.GraphicLevel;
+package ru.mipt.bit.platformer.objects.GraphicLevel.Utils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapRenderer;
@@ -6,11 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
-import ru.mipt.bit.platformer.objects.LogicLevel.Obstacle;
 import ru.mipt.bit.platformer.util.TileMovement;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;

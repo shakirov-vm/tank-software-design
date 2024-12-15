@@ -6,13 +6,14 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.*;
+import ru.mipt.bit.platformer.objects.GraphicLevel.Utils.Map;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.CommandsHandler;
 
 import java.io.IOException;
 import java.nio.file.Path;
