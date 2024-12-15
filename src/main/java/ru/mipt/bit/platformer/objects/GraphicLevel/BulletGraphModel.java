@@ -9,7 +9,7 @@ import ru.mipt.bit.platformer.util.TileMovement;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 
-public class BulletGraphModel implements Drawable {
+public class BulletGraphModel implements Drawable,MovablePic {
 
     private final BulletLogModel bullet;
 
@@ -40,6 +40,10 @@ public class BulletGraphModel implements Drawable {
         return bullet;
     }
 
+    @Override
+    public void changeMovementProgess(float deltaTime, float MOVEMENT_SPEED) {
+        bullet.movementProgess(deltaTime, MOVEMENT_SPEED);
+    }
     @Override
     public void draw(Batch batch) {
         // render bullet

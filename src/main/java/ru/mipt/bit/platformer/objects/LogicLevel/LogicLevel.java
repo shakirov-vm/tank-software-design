@@ -1,7 +1,8 @@
 package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.objects.GraphicLevel.Listener;
+import ru.mipt.bit.platformer.objects.GraphicLevel.Drawer;
+import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +13,7 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.incrementedX;
 
 public class LogicLevel {
 
-    Listener listener;
+    Drawer drawer;
 
     private TankLogModel player;
     private Set<TreeLogModel> trees = new HashSet<>();
@@ -21,7 +22,21 @@ public class LogicLevel {
 
     private static final String BULLET_PATH_TO_PNG = "images/bullet.png";
 
-    public LogicLevel(Listener listener_) { listener = listener_; }
+    private void initializeWithObjects(MapInitObjects initObjects) {
+        for (GridPoint2 coord : initObjects.getObstacles()) {
+            addTree(new TreeLogModel(coord.x, coord.y));
+        }
+
+        for (GridPoint2 coord : initObjects.getStartedEnemies()) {
+            addEnemy(new TankLogModel(coord.x, coord.y));
+        }
+        addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y));
+    }
+
+    public LogicLevel(Drawer drawer_, MapInitObjects initObjects) {
+        drawer = drawer_;
+        initializeWithObjects(initObjects);
+    }
 
     public TankLogModel getPlayer() {
         return player;
@@ -33,22 +48,22 @@ public class LogicLevel {
         return bullets;
     }
 
-    public void addPlayer(TankLogModel player_) {
+    private void addPlayer(TankLogModel player_) {
         player = player_;
-        listener.addPlayer(player);
+        drawer.addPlayer(player);
     }
-    public void addTree(TreeLogModel tree) {
+    private void addTree(TreeLogModel tree) {
         trees.add(tree);
-        listener.addTree(tree);
+        drawer.addTree(tree);
     }
-    public void addEnemy(TankLogModel enemy) {
+    private void addEnemy(TankLogModel enemy) {
         enemies.add(enemy);
-        listener.addEnemy(enemy);
+        drawer.addEnemy(enemy);
     }
 
     public void tryAddBullet(BulletLogModel bullet) {
         bullets.add(bullet);
-        listener.addBullet(bullet);
+        drawer.addBullet(bullet);
     }
 
     private Set<GridPoint2> getObstaclesForTank(TankLogModel tank) {

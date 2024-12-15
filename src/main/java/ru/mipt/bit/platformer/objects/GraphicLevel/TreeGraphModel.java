@@ -16,16 +16,15 @@ public class TreeGraphModel implements Drawable {
     private final ModelTexture greenTree;
     private final Rectangle rectangle;
 
-    public TreeGraphModel(String pathTreePng, TreeLogModel logModel) {
+    public TreeGraphModel(String pathTreePng, TreeLogModel logModel, TiledMapTileLayer groundLayer) {
         greenTree = new ModelTexture(pathTreePng);
         rectangle = createBoundingRectangle(greenTree.getRegion());
-
         tree = logModel;
+        moveRectangleAtTileCenter(groundLayer, rectangle, tree.getPosition().getCoordinates());
     }
 
     public void rectToCenter(TiledMapTileLayer groundLayer) {
 
-        moveRectangleAtTileCenter(groundLayer, rectangle, tree.getPosition().getCoordinates());
     }
 
     @Override

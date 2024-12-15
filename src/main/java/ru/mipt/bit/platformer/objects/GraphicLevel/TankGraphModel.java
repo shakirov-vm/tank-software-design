@@ -14,7 +14,7 @@ import ru.mipt.bit.platformer.util.TileMovement;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 
-public class TankGraphModel implements Drawable {
+public class TankGraphModel implements Drawable, MovablePic {
 
     private final TankLogModel tank;
 
@@ -42,6 +42,10 @@ public class TankGraphModel implements Drawable {
         return tank;
     }
 
+    @Override
+    public void changeMovementProgess(float deltaTime, float MOVEMENT_SPEED) {
+        tank.movementProgess(deltaTime, MOVEMENT_SPEED);
+    }
     @Override
     public void draw(Batch batch) {
         // render player

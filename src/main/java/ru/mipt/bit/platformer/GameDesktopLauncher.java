@@ -10,23 +10,13 @@ import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.DefaultDirectionMoveCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.ShootCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Generators.AICommandsGenerator;
-import ru.mipt.bit.platformer.objects.LogicLevel.Generators.TapHandler;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
-import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
-
-import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
-import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirection;
-import static ru.mipt.bit.platformer.objects.LogicLevel.Generators.StaticCommandsGenerator.generateStaticCommands;
 
 public class GameDesktopLauncher implements ApplicationListener {
 
@@ -45,7 +35,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private MapInitObjects initObjects;
 
     private LogicLevel level;
-    private Listener listener;
+    private Drawer drawer;
 
     private CommandsHandler cmdHandler;
 
@@ -71,37 +61,26 @@ public class GameDesktopLauncher implements ApplicationListener {
         batch = new SpriteBatch();
         map = new Map(batch, MAP_PATH_TO_TMX);
 
-        listener = new Listener(map.createTileMovement());
-        level = new LogicLevel(listener);
-        for (GridPoint2 coord : initObjects.getObstacles()) {
-            level.addTree(new TreeLogModel(coord.x, coord.y));
-        }
+        drawer = new Drawer(map.createTileMovement(), map.getGroundLayer());
+        level = new LogicLevel(drawer, initObjects);
 
-        for (GridPoint2 coord : initObjects.getStartedEnemies()) {
-            level.addEnemy(new TankLogModel(coord.x, coord.y));
-        }
-        level.addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y));
         cmdHandler = new CommandsHandler(level);
-
-        for (TreeGraphModel tree: listener.getTrees()) {
-            tree.rectToCenter(map.getGroundLayer());
-        }
     }
 
     @Override
     public void render() {
-        listener.clearScreen();
+        drawer.clearScreen();
 
         Set<Command> cmds = cmdHandler.generateCommands();
         cmdHandler.executeCommands(cmds);
 
-        listener.handleHealthDrawing();
+        drawer.handleHealthDrawing();
         // get time passed since the last render
-        listener.moveGraphicPics(Gdx.graphics.getDeltaTime());
+        drawer.moveGraphicPics(Gdx.graphics.getDeltaTime());
         map.render();
 
         batch.begin();
-        listener.drawModels(batch);
+        drawer.drawModels(batch);
         batch.end();
     }
 
@@ -123,12 +102,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
-        listener.getPlayer().dispose();
-        for (TreeGraphModel tree : listener.getTrees()) {
-            tree.dispose();
-        }
-        map.dispose();
-        batch.dispose();
+        drawer.disposeModels();
     }
 
     public static void main(String[] args) throws IOException {
