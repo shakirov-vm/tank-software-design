@@ -4,7 +4,7 @@ import ru.mipt.bit.platformer.objects.LogicLevel.BulletLogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Direction;
 import ru.mipt.bit.platformer.objects.LogicLevel.Movable;
 
-public class DefaultDirectionMoveCommand {
+public class DefaultDirectionMoveCommand implements Command {
     BulletLogModel obj;
 
     public DefaultDirectionMoveCommand(BulletLogModel obj_) {

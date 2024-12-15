@@ -1,13 +1,12 @@
 package ru.mipt.bit.platformer.objects.LogicLevel.Generators;
 
-import ru.mipt.bit.platformer.objects.GraphicLevel.TankGraphModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.BulletLogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.DefaultDirectionMoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.ShootCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Direction;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogicLevel;
-import ru.mipt.bit.platformer.objects.LogicLevel.Movable;
 import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
 
 import java.util.HashSet;
@@ -16,28 +15,18 @@ import java.util.Set;
 import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirection;
 import static ru.mipt.bit.platformer.objects.LogicLevel.UtilsRandom.getRandomNumberUsingNextInt;
 
-public class AICommandsGenerator {
+public class StaticCommandsGenerator {
 
-    LogicLevel level;
-    final int FREQUENCY = 5;
-
-    public AICommandsGenerator(LogicLevel level_) {
-        level = level_;
-    }
-
-    public Set<Command> generateEnemiesCommands(Set<TankLogModel> enemies, LogicLevel level) {
+    public static Set<Command> generateStaticCommands(Set<BulletLogModel> bullets, LogicLevel level) {
         Set<Command> commands = new HashSet<>();
 
-        for (TankLogModel tank: enemies) {
-            Direction direction = randomDirection();
-            if (level.tryMoveTank(tank, direction)) {
-                commands.add(new MoveCommand(tank, direction));
-            }
-            if (getRandomNumberUsingNextInt(0, FREQUENCY) % FREQUENCY == 0) {
-                commands.add(new ShootCommand(level, tank));
+        for (BulletLogModel bullet: bullets) {
+            if (level.tryMoveBullet(bullet)) {
+                commands.add(new DefaultDirectionMoveCommand(bullet));
             }
         }
 
         return commands;
     }
+
 }

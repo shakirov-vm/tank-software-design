@@ -26,6 +26,9 @@ public class LogicLevel {
     public Set<TankLogModel> getEnemies() {
         return enemies;
     }
+    public Set<BulletLogModel> getBullets() {
+        return bullets;
+    }
 
     public void addPlayer(TankLogModel player_) {
         player = player_;

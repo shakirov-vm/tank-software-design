@@ -26,10 +26,9 @@ import java.util.Set;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirection;
+import static ru.mipt.bit.platformer.objects.LogicLevel.Generators.StaticCommandsGenerator.generateStaticCommands;
 
 public class GameDesktopLauncher implements ApplicationListener {
-
-    private static final float MOVEMENT_SPEED = 0.4f;
 
     private static final int SCREEN_WIDTH = 1280;
     private static final int SCREEN_HEIGHT = 1024;
@@ -41,7 +40,6 @@ public class GameDesktopLauncher implements ApplicationListener {
     private static final String OBSTACLES_PATH_TO_TMX = "src/main/resources/obstacles.txt";
 
     private Batch batch;
-    private TileMovement tileMovement;
 
     private Map map;
     private MapInitObjects initObjects;
@@ -71,11 +69,11 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void create() {
 
-        listener = new Listener();
-        level = new LogicLevel(listener);
-
         batch = new SpriteBatch();
+        map = new Map(batch, MAP_PATH_TO_TMX);
 
+        listener = new Listener(map.createTileMovement());
+        level = new LogicLevel(listener);
         for (GridPoint2 coord : initObjects.getObstacles()) {
             level.addTree(new TreeLogModel(coord.x, coord.y));
         }
@@ -83,13 +81,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         for (GridPoint2 coord : initObjects.getStartedEnemies()) {
             level.addEnemy(new TankLogModel(coord.x, coord.y));
         }
-
         level.addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y));
-
-        map = new Map(batch, MAP_PATH_TO_TMX);
-
-        tileMovement = map.createTileMovement();
-
         keys = new TapHandler(listener.getPlayer(), listener.getEnemies(), level);
 
         for (TreeGraphModel tree: listener.getTrees()) {
@@ -110,42 +102,19 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         Set<Command> commands = AIGenerator.generateEnemiesCommands(Set.copyOf(level.getEnemies()), level);
         commands.addAll(keys.generateKeysCommands());
+        commands.addAll(generateStaticCommands(Set.copyOf(level.getBullets()), level));
 
         for (Command cmd : commands) {
             cmd.execute();
         }
 
-        listener.getPlayer().movePic(tileMovement);
-        listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
-        for (TankGraphModel tank: listener.getEnemies()) {
-            tank.movePic(tileMovement);
-            tank.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
-        }
-        for (BulletGraphModel bullet: listener.getBullets()) {
-            if (level.tryMoveBullet(bullet.getBullet())) {
-                (new DefaultDirectionMoveCommand(bullet.getBullet())).execute();
-            }
-            bullet.movePic(tileMovement);
-            bullet.getBullet().movementProgess(deltaTime, MOVEMENT_SPEED);
-        }
-
+        listener.moveGraphicPics(deltaTime);
         map.render();
 
         batch.begin();
 
-        listener.getPlayer().draw(batch);
-        for (TreeGraphModel tree : listener.getTrees()) {
-            tree.draw(batch);
-        }
-        for (TankGraphModel tank : listener.getEnemies()) {
-            tank.draw(batch);
-        }
-        for (BulletGraphModel bullet : listener.getBullets()) {
-            bullet.draw(batch);
-        }
-
+        listener.drawModels(batch);
         batch.end();
-
     }
 
     @Override
