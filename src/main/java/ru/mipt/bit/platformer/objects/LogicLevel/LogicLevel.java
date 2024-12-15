@@ -70,6 +70,10 @@ public class LogicLevel {
         bullets.add(bullet);
         drawer.addBullet(bullet);
     }
+    public void removeBullet(BulletLogModel bullet) {
+        drawer.removeBullet(bullet);
+        bullets.remove(bullet);
+    }
     public boolean tryMoveTank(TankLogModel tank, Direction direction) {
 
         Set<GridPoint2> obstacles = getObstaclesForTank(tank);
@@ -93,8 +97,36 @@ public class LogicLevel {
         return false;
     }
     public boolean tryMoveBullet(BulletLogModel bullet) {
+
+        Set<GridPoint2> obstacles = getObstaclesForBullet();
+
         if (isEqual(bullet.getPlayerMovementProgress(), 1f)) {
-            return true;
+            switch (bullet.getCurrPosition().getDirection()) {
+                case UP:
+                    if (canMoveUp(obstacles, bullet.getCurrPosition())) return true;
+                    else {
+                        removeBullet(bullet);
+                        return false;
+                    }
+                case DOWN:
+                    if (canMoveDown(obstacles, bullet.getCurrPosition())) return true;
+                    else {
+                        removeBullet(bullet);
+                        return false;
+                    }
+                case LEFT:
+                    if (canMoveLeft(obstacles, bullet.getCurrPosition())) return true;
+                    else {
+                        removeBullet(bullet);
+                        return false;
+                    }
+                case RIGHT:
+                    if (canMoveRight(obstacles, bullet.getCurrPosition())) return true;
+                    else {
+                        removeBullet(bullet);
+                        return false;
+                    }
+            }
         }
         return false;
     }
@@ -126,6 +158,24 @@ public class LogicLevel {
         if (isEnemies)
             enemies.add(tank);
 
+        return bannedCoordinates;
+    }
+    private Set<GridPoint2> getObstaclesForBullet() {
+
+        HashSet<GridPoint2> bannedCoordinates = new HashSet<>();
+        for (TreeLogModel obstacle : trees) {
+            Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
+            for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
+                bannedCoordinates.add(coordinate);
+            }
+        }
+        // if given tank is enemy, it removed; else given tank is player and need all tanks
+        for (TankLogModel obstacle : enemies) {
+            Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
+            for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
+                bannedCoordinates.add(coordinate);
+            }
+        }
         return bannedCoordinates;
     }
     private boolean canMoveUp(Set<GridPoint2> obstacles, Position currPosition) {

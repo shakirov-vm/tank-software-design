@@ -14,7 +14,9 @@ import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TankLogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TreeLogModel;
 import ru.mipt.bit.platformer.util.TileMovement;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static com.badlogic.gdx.Input.Keys.L;
@@ -34,6 +36,8 @@ public class Drawer {
     private Set<Drawable> drawables = new HashSet<>();
     private Set<MovablePic> movablePics = new HashSet<>();
     private Set<DrawableHealthDecorator> healthies = new HashSet<>();
+
+    private Map<BulletLogModel, BulletGraphModel> bulletLogToGraph = new HashMap<>();
 
     public Drawer(TileMovement tileMovement_, TiledMapTileLayer groundLayer_) {
         tileMovement = tileMovement_;
@@ -62,9 +66,18 @@ public class Drawer {
     }
     public void addBullet(BulletLogModel bullet_) {
         BulletGraphModel bullet = new BulletGraphModel(BULLET_PATH_TO_PNG, bullet_);
+        bulletLogToGraph.put(bullet_, bullet);
 
         movablePics.add(bullet);
         drawables.add(bullet);
+    }
+    public void removeBullet(BulletLogModel bullet_) {
+        BulletGraphModel bullet = bulletLogToGraph.get(bullet_);
+        bullet.dispose();
+        movablePics.remove(bullet);
+        drawables.remove(bullet);
+
+        bulletLogToGraph.remove(bullet_);
     }
 
     public void moveGraphicPics(float deltaTime) {
