@@ -9,9 +9,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.DefaultDirectionMoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.ShootCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Generators.AICommandsGenerator;
+import ru.mipt.bit.platformer.objects.LogicLevel.Generators.TapHandler;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
@@ -19,7 +22,7 @@ import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Random;
+import java.util.Set;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirection;
@@ -46,6 +49,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private LogicLevel level;
     private Listener listener;
 
+    private AICommandsGenerator AIGenerator;
     private TapHandler keys;
 
     private enum obstaclesCreateMode {
@@ -91,12 +95,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         for (TreeGraphModel tree: listener.getTrees()) {
             tree.rectToCenter(map.getGroundLayer());
         }
-    }
-
-    private int getRandomNumberUsingNextInt(int min, int max) {
-
-        Random random = new Random();
-        return random.nextInt(max - min) + min;
+        AIGenerator = new AICommandsGenerator(level);
     }
 
     @Override
@@ -109,20 +108,16 @@ public class GameDesktopLauncher implements ApplicationListener {
         // get time passed since the last render
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        // SET ACTIONS TO PLAYER (MOVE AND SHOOT)
-        keys.handle();
+        Set<Command> commands = AIGenerator.generateEnemiesCommands(Set.copyOf(level.getEnemies()), level);
+        commands.addAll(keys.generateKeysCommands());
+
+        for (Command cmd : commands) {
+            cmd.execute();
+        }
 
         listener.getPlayer().movePic(tileMovement);
         listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         for (TankGraphModel tank: listener.getEnemies()) {
-            Direction direction = randomDirection();
-            if (level.tryMoveTank(tank.getTank(), direction)) {
-                (new MoveCommand((Movable) tank.getTank(), direction)).execute();
-            }
-            int FREQUENCY = 5;
-            if (getRandomNumberUsingNextInt(0, FREQUENCY) % FREQUENCY == 0) {
-                (new ShootCommand(level, tank.getTank())).execute();
-            }
             tank.movePic(tileMovement);
             tank.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         }

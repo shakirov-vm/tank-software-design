@@ -23,6 +23,10 @@ public class LogicLevel {
 
     public LogicLevel(Listener listener_) { listener = listener_; }
 
+    public Set<TankLogModel> getEnemies() {
+        return enemies;
+    }
+
     public void addPlayer(TankLogModel player_) {
         player = player_;
         listener.addPlayer(player);
@@ -42,6 +46,7 @@ public class LogicLevel {
     }
 
     private Set<GridPoint2> getObstaclesForTank(TankLogModel tank) {
+
         boolean isEnemies = enemies.remove(tank);
 
         HashSet<GridPoint2> bannedCoordinates = new HashSet<>();
