@@ -23,7 +23,6 @@ public class BulletLogModel {
         nextPosition = new Position(newPosition);
     }
 
-
     public GridPoint2 getNextCoordinates(Direction direction) {
         switch (direction) {
             case UP:

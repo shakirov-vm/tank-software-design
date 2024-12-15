@@ -9,9 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.EnemyShootCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.DefaultDirectionMoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerShootCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.ShootCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
@@ -19,6 +19,7 @@ import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Random;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.objects.LogicLevel.Direction.randomDirection;
@@ -42,7 +43,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Map map;
     private MapInitObjects initObjects;
 
-    private LogicLevel publisher;
+    private LogicLevel level;
     private Listener listener;
 
     private TapHandler keys;
@@ -67,29 +68,35 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void create() {
 
         listener = new Listener();
-        publisher = new LogicLevel(listener);
+        level = new LogicLevel(listener);
 
         batch = new SpriteBatch();
 
         for (GridPoint2 coord : initObjects.getObstacles()) {
-            publisher.addTree(new TreeLogModel(coord.x, coord.y));
+            level.addTree(new TreeLogModel(coord.x, coord.y));
         }
 
         for (GridPoint2 coord : initObjects.getStartedEnemies()) {
-            publisher.addEnemy(new TankLogModel(coord.x, coord.y));
+            level.addEnemy(new TankLogModel(coord.x, coord.y));
         }
 
-        publisher.addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y));
+        level.addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y));
 
         map = new Map(batch, MAP_PATH_TO_TMX);
 
         tileMovement = map.createTileMovement();
 
-        keys = new TapHandler(listener.getPlayer(), listener.getEnemies(), publisher);
+        keys = new TapHandler(listener.getPlayer(), listener.getEnemies(), level);
 
         for (TreeGraphModel tree: listener.getTrees()) {
             tree.rectToCenter(map.getGroundLayer());
         }
+    }
+
+    private int getRandomNumberUsingNextInt(int min, int max) {
+
+        Random random = new Random();
+        return random.nextInt(max - min) + min;
     }
 
     @Override
@@ -105,21 +112,23 @@ public class GameDesktopLauncher implements ApplicationListener {
         // SET ACTIONS TO PLAYER (MOVE AND SHOOT)
         keys.handle();
 
-        // Must be player movement there???
         listener.getPlayer().movePic(tileMovement);
         listener.getPlayer().getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         for (TankGraphModel tank: listener.getEnemies()) {
             Direction direction = randomDirection();
-            if (publisher.tryMoveTank(tank.getTank(), direction)) {
+            if (level.tryMoveTank(tank.getTank(), direction)) {
                 (new MoveCommand((Movable) tank.getTank(), direction)).execute();
             }
-            (new EnemyShootCommand(publisher, tank.getTank())).execute();
+            int FREQUENCY = 5;
+            if (getRandomNumberUsingNextInt(0, FREQUENCY) % FREQUENCY == 0) {
+                (new ShootCommand(level, tank.getTank())).execute();
+            }
             tank.movePic(tileMovement);
             tank.getTank().movementProgess(deltaTime, MOVEMENT_SPEED);
         }
         for (BulletGraphModel bullet: listener.getBullets()) {
-            if (publisher.tryMoveBullet(bullet.getBullet())) {
-               bullet.getBullet().move();
+            if (level.tryMoveBullet(bullet.getBullet())) {
+                (new DefaultDirectionMoveCommand(bullet.getBullet())).execute();
             }
             bullet.movePic(tileMovement);
             bullet.getBullet().movementProgess(deltaTime, MOVEMENT_SPEED);

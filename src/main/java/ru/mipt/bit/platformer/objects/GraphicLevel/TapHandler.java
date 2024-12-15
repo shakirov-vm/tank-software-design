@@ -2,7 +2,7 @@ package ru.mipt.bit.platformer.objects.GraphicLevel;
 
 import com.badlogic.gdx.Gdx;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.PlayerShootCommand;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.ShootCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Direction;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogicLevel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Movable;
@@ -17,12 +17,12 @@ public class TapHandler {
     private final TankGraphModel player;
     private final Set<TankGraphModel> enemies;
     private boolean isDrawHealthBar = false;
-    private LogicLevel publisher;
+    private LogicLevel level;
 
-    public TapHandler(TankGraphModel player_, Set<TankGraphModel> enemies_, LogicLevel publisher_) {
+    public TapHandler(TankGraphModel player_, Set<TankGraphModel> enemies_, LogicLevel level_) {
         player = player_;
         enemies = enemies_;
-        publisher = publisher_;
+        level = level_;
     }
 
     public void handle() {
@@ -51,7 +51,7 @@ public class TapHandler {
         }
         if (movePressed) {
             player.getTank().getCurrPosition().setDirection(nextDirection);
-            if (publisher.tryMoveTank(player.getTank(), nextDirection)) {
+            if (level.tryMoveTank(player.getTank(), nextDirection)) {
                 (new MoveCommand((Movable) player.getTank(), nextDirection)).execute();
             }
         }
@@ -64,7 +64,7 @@ public class TapHandler {
             }
         }
         if (Gdx.input.isKeyPressed(SPACE)) {
-            (new PlayerShootCommand(publisher, player.getTank())).execute();
+            (new ShootCommand(level, player.getTank())).execute();
         }
     }
 }

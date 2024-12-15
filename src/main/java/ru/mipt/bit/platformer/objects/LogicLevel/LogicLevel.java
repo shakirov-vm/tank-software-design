@@ -70,36 +70,35 @@ public class LogicLevel {
         return bannedCoordinates;
     }
 
-    public boolean canMoveUp(Set<GridPoint2> obstacles, Position currPosition) {
+    private boolean canMoveUp(Set<GridPoint2> obstacles, Position currPosition) {
         boolean result = true;
         for (GridPoint2 coords : obstacles) {
             result = result && !coords.equals(incrementedY(currPosition.getCoordinates()));
         }
         return result;
     }
-    public boolean canMoveDown(Set<GridPoint2> obstacles, Position currPosition) {
+    private boolean canMoveDown(Set<GridPoint2> obstacles, Position currPosition) {
         boolean result = true;
         for (GridPoint2 coords : obstacles) {
             result = result && !coords.equals(decrementedY(currPosition.getCoordinates()));
         }
         return result;
     }
-    public boolean canMoveLeft(Set<GridPoint2> obstacles, Position currPosition) {
+    private boolean canMoveLeft(Set<GridPoint2> obstacles, Position currPosition) {
         boolean result = true;
         for (GridPoint2 coords : obstacles) {
             result = result && !coords.equals(decrementedX(currPosition.getCoordinates()));
         }
         return result;
     }
-    public boolean canMoveRight(Set<GridPoint2> obstacles, Position currPosition) {
+    private boolean canMoveRight(Set<GridPoint2> obstacles, Position currPosition) {
         boolean result = true;
         for (GridPoint2 coords : obstacles) {
             result = result && !coords.equals(incrementedX(currPosition.getCoordinates()));
         }
         return result;
     }
-    // Перед вызовом tryMoveTank устанавливается nextDirection, в который надо двигаться
-    // Перенести всё сюда из moveTank и tapHandler
+
     public boolean tryMoveTank(TankLogModel tank, Direction direction) {
 
         Set<GridPoint2> obstacles = getObstaclesForTank(tank);

@@ -57,7 +57,10 @@ public class TankLogModel implements Obstacle, Movable {
         nextPosition.setCoordinates(getNextCoordinates(direction));
         currPosition.setDirection(direction);
     }
-    public void shoot() {
+    public void shoot(LogicLevel level) {
+        GridPoint2 nextCoordinates = getNextPosition().getCoordinates();
+        BulletLogModel bullet = new BulletLogModel(new Position(nextCoordinates.x, nextCoordinates.y, getCurrPosition().getDirection()));
+        level.tryAddBullet(bullet);
     }
     public void movementProgess(float deltaTime, float movement_speed) {
         playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, movement_speed);
@@ -65,36 +68,6 @@ public class TankLogModel implements Obstacle, Movable {
             // record that the player has reached his/her destination
             currPosition.setCoordinates(nextPosition.getCoordinates());
         }
-    }
-
-    // Remove this
-    public boolean canMoveUp(Set<GridPoint2> obstacles) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(incrementedY(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    public boolean canMoveDown(Set<GridPoint2> obstacles) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(decrementedY(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    public boolean canMoveLeft(Set<GridPoint2> obstacles) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(decrementedX(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    public boolean canMoveRight(Set<GridPoint2> obstacles) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(incrementedX(currPosition.getCoordinates()));
-        }
-        return result;
     }
 
     public Set<GridPoint2> getBannedCoordinates() {
