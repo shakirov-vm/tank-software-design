@@ -66,7 +66,7 @@ public class LogicLevel {
         drawer.addEnemy(enemy);
     }
 
-    public void tryAddBullet(BulletLogModel bullet) {
+    public void addBullet(BulletLogModel bullet) {
         bullets.add(bullet);
         drawer.addBullet(bullet);
     }

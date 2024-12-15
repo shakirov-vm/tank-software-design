@@ -65,7 +65,7 @@ public class TankLogModel implements Obstacle, Movable, Liveable {
     public void shoot(LogicLevel level) {
         GridPoint2 nextCoordinates = getNextPosition().getCoordinates();
         BulletLogModel bullet = new BulletLogModel(new Position(nextCoordinates.x, nextCoordinates.y, getCurrPosition().getDirection()));
-        level.tryAddBullet(bullet);
+        level.addBullet(bullet);
     }
     public void movementProgess(float deltaTime, float movement_speed) {
         playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, movement_speed);
