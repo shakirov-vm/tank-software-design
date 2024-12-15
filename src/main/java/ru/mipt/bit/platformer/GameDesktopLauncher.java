@@ -125,7 +125,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
         listener.getPlayer().dispose();
         for (TreeGraphModel tree : listener.getTrees()) {
-            tree.Dispose();
+            tree.dispose();
         }
         map.dispose();
         batch.dispose();

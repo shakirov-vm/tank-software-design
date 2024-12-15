@@ -14,15 +14,13 @@ import ru.mipt.bit.platformer.util.TileMovement;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 
-public class TankGraphModel {
+public class TankGraphModel implements Drawable {
 
     private final TankLogModel tank;
 
     // Graphics
     private final ModelTexture blueTank;
     private final Rectangle rectangle;
-
-    private boolean drawHealth = true;
 
     public TankGraphModel(String pathToPng, TankLogModel logModel) {
         blueTank = new ModelTexture(pathToPng);
@@ -40,47 +38,29 @@ public class TankGraphModel {
         tileMovement.moveRectangleBetweenTileCenters(rectangle,
                 curr.getCoordinates(), next.getCoordinates(), tank.getPlayerMovementProgress());
     }
-
-    private TextureRegion getHealthbarTexture(float relativeHealth) {
-        var pixmap = new Pixmap(90, 20, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.RED);
-        pixmap.fillRectangle(0, 0, 90, 20);
-        pixmap.setColor(Color.GREEN);
-        pixmap.fillRectangle(0, 0, (int) (90 * relativeHealth), 20);
-        var texture = new Texture(pixmap);
-        pixmap.dispose();
-        return new TextureRegion(texture);
-    }
-
-    private Rectangle createRectangle() {
-        var rectangle_ = new Rectangle(rectangle);
-        rectangle_.y += 90;
-        return rectangle_;
-    }
-
-    private void renderHealthbar(Batch batch) {
-        var health = tank.getHealth();
-        var healthbarTexture = getHealthbarTexture(health);
-        var rectangle = createRectangle();
-        GdxGameUtils.drawTextureRegionUnscaled(batch, healthbarTexture, rectangle, 0f);
-    }
-
-    public void setDrawHealth(boolean isDraw) {
-        drawHealth = isDraw;
-    }
-
     public TankLogModel getTank() {
         return tank;
     }
 
+    @Override
     public void draw(Batch batch) {
         // render player
         drawTextureRegionUnscaled(batch, blueTank.getRegion(), rectangle, tank.getCurrPosition().getDirection().getAngle());
-        if (drawHealth)
-            renderHealthbar(batch);
     }
-
+    @Override
     public void dispose() {
         blueTank.dispose();
+    }
+    @Override
+    public Class<?> getLogical() {
+        return tank.getClass();
+    }
+    @Override
+    public Object getObject() {
+        return tank;
+    }
+    @Override
+    public Rectangle getRectangle() {
+        return rectangle;
     }
 }

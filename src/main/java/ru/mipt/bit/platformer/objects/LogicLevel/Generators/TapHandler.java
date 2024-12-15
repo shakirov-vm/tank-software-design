@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.objects.LogicLevel.Generators;
 
 import com.badlogic.gdx.Gdx;
+import ru.mipt.bit.platformer.objects.GraphicLevel.TankGraphModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.ShootCommand;
@@ -74,6 +75,9 @@ public class TapHandler {
             commands.add(new ShootCommand(level, player));
         }
 
+        return commands;
+    }
+/*    public void handleHealthDrawing(Set<TankGraphModel> enemies) {
         if (Gdx.input.isKeyPressed(L)) {
             isDrawHealthBar = !isDrawHealthBar;
             player.setDrawHealth(isDrawHealthBar);
@@ -81,6 +85,5 @@ public class TapHandler {
                 tank.setDrawHealth(isDrawHealthBar);
             }
         }
-        return commands;
-    }
+    }*/
 }

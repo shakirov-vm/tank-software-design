@@ -8,7 +8,7 @@ import ru.mipt.bit.platformer.objects.LogicLevel.TreeLogModel;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class TreeGraphModel {
+public class TreeGraphModel implements Drawable {
 
     private final TreeLogModel tree;
 
@@ -23,17 +23,30 @@ public class TreeGraphModel {
         tree = logModel;
     }
 
-    public void draw(Batch batch) {
-        // render tree obstacle
-        drawTextureRegionUnscaled(batch, greenTree.getRegion(), rectangle, tree.getPosition().getDirection().getAngle());
-    }
-
     public void rectToCenter(TiledMapTileLayer groundLayer) {
 
         moveRectangleAtTileCenter(groundLayer, rectangle, tree.getPosition().getCoordinates());
     }
 
-    public void Dispose() {
+    @Override
+    public void draw(Batch batch) {
+        // render tree obstacle
+        drawTextureRegionUnscaled(batch, greenTree.getRegion(), rectangle, tree.getPosition().getDirection().getAngle());
+    }
+    @Override
+    public void dispose() {
         greenTree.dispose();
+    }
+    @Override
+    public Class<?> getLogical() {
+        return tree.getClass();
+    }
+    @Override
+    public Object getObject() {
+        return tree;
+    }
+    @Override
+    public Rectangle getRectangle() {
+        return rectangle;
     }
 }

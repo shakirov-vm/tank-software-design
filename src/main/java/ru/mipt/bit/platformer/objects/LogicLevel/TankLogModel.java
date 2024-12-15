@@ -10,7 +10,7 @@ import java.util.Set;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class TankLogModel implements Obstacle, Movable {
+public class TankLogModel implements Obstacle, Movable, Liveable {
 
     // Model position
     private final Position currPosition;

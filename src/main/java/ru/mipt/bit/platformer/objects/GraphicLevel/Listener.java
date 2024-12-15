@@ -27,21 +27,29 @@ public class Listener {
     private Set<TreeGraphModel> trees = new HashSet<>();
     private Set<TankGraphModel> enemies = new HashSet<>();
     private Set<BulletGraphModel> bullets = new HashSet<>();
+    private Set<Drawable> drawables = new HashSet<>();
 
     public Listener(TileMovement tileMovement_) {
         tileMovement = tileMovement_;
     }
     public void addPlayer(TankLogModel player_) {
         player = new TankGraphModel(TANK_PATH_TO_PNG, player_);
+        drawables.add(new DrawableHealthDecorator(player));
     }
-    public void addTree(TreeLogModel tree) {
-        trees.add(new TreeGraphModel(TREE_PATH_TO_PNG, tree));
+    public void addTree(TreeLogModel tree_) {
+        TreeGraphModel tree = new TreeGraphModel(TREE_PATH_TO_PNG, tree_);
+        trees.add(tree);
+        drawables.add(tree);
     }
-    public void addEnemy(TankLogModel enemy) {
-        enemies.add(new TankGraphModel(TANK_PATH_TO_PNG, enemy));
+    public void addEnemy(TankLogModel enemy_) {
+        TankGraphModel enemy = new TankGraphModel(TANK_PATH_TO_PNG, enemy_);
+        enemies.add(enemy);
+        drawables.add(new DrawableHealthDecorator(enemy));
     }
-    public void addBullet(BulletLogModel bullet) {
-        bullets.add(new BulletGraphModel(BULLET_PATH_TO_PNG, bullet));
+    public void addBullet(BulletLogModel bullet_) {
+        BulletGraphModel bullet = new BulletGraphModel(BULLET_PATH_TO_PNG, bullet_);
+        bullets.add(bullet);
+        drawables.add(bullet);
     }
 
     public TankGraphModel getPlayer() { return player; }
@@ -64,20 +72,11 @@ public class Listener {
         }
     }
     public void drawModels(Batch batch) {
-        // use drawable
-        player.draw(batch);
-        for (TreeGraphModel tree : trees) {
-            tree.draw(batch);
-        }
-        for (TankGraphModel tank : enemies) {
-            tank.draw(batch);
-        }
-        for (BulletGraphModel bullet : bullets) {
-            bullet.draw(batch);
+        for (Drawable drawable : drawables) {
+            drawable.draw(batch);
         }
     }
     public void clearScreen() {
-
         // clear the screen
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
