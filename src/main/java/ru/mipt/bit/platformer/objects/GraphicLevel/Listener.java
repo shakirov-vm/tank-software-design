@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.objects.GraphicLevel;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import ru.mipt.bit.platformer.objects.LogicLevel.BulletLogModel;
@@ -10,6 +11,8 @@ import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class Listener {
 
@@ -72,5 +75,11 @@ public class Listener {
         for (BulletGraphModel bullet : bullets) {
             bullet.draw(batch);
         }
+    }
+    public void clearScreen() {
+
+        // clear the screen
+        Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
+        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
     }
 }

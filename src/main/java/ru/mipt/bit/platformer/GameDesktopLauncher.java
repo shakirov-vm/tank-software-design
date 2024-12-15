@@ -91,21 +91,16 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void render() {
 
-        // clear the screen
-        Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
-        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
-
-        // get time passed since the last render
-        float deltaTime = Gdx.graphics.getDeltaTime();
+        listener.clearScreen();
 
         Set<Command> cmds = cmdHandler.generateCommands();
         cmdHandler.executeCommands(cmds);
 
-        listener.moveGraphicPics(deltaTime);
+        // get time passed since the last render
+        listener.moveGraphicPics(Gdx.graphics.getDeltaTime());
         map.render();
 
         batch.begin();
-
         listener.drawModels(batch);
         batch.end();
     }
