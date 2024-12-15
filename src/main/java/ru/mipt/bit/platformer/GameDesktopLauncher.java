@@ -47,8 +47,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private LogicLevel level;
     private Listener listener;
 
-    private AICommandsGenerator AIGenerator;
-    private TapHandler keys;
+    private CommandsHandler cmdHandler;
 
     private enum obstaclesCreateMode {
         RANDOM_OBSTACLES,
@@ -82,12 +81,11 @@ public class GameDesktopLauncher implements ApplicationListener {
             level.addEnemy(new TankLogModel(coord.x, coord.y));
         }
         level.addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y));
-        keys = new TapHandler(listener.getPlayer(), listener.getEnemies(), level);
+        cmdHandler = new CommandsHandler(level);
 
         for (TreeGraphModel tree: listener.getTrees()) {
             tree.rectToCenter(map.getGroundLayer());
         }
-        AIGenerator = new AICommandsGenerator(level);
     }
 
     @Override
@@ -100,13 +98,8 @@ public class GameDesktopLauncher implements ApplicationListener {
         // get time passed since the last render
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        Set<Command> commands = AIGenerator.generateEnemiesCommands(Set.copyOf(level.getEnemies()), level);
-        commands.addAll(keys.generateKeysCommands());
-        commands.addAll(generateStaticCommands(Set.copyOf(level.getBullets()), level));
-
-        for (Command cmd : commands) {
-            cmd.execute();
-        }
+        Set<Command> cmds = cmdHandler.generateCommands();
+        cmdHandler.executeCommands(cmds);
 
         listener.moveGraphicPics(deltaTime);
         map.render();

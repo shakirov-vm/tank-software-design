@@ -23,6 +23,9 @@ public class LogicLevel {
 
     public LogicLevel(Listener listener_) { listener = listener_; }
 
+    public TankLogModel getPlayer() {
+        return player;
+    }
     public Set<TankLogModel> getEnemies() {
         return enemies;
     }

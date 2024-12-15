@@ -1,13 +1,13 @@
 package ru.mipt.bit.platformer.objects.LogicLevel.Generators;
 
 import com.badlogic.gdx.Gdx;
-import ru.mipt.bit.platformer.objects.GraphicLevel.TankGraphModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.MoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.ShootCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Direction;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogicLevel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Movable;
+import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,14 +16,12 @@ import static com.badlogic.gdx.Input.Keys.*;
 
 public class TapHandler {
 
-    private final TankGraphModel player;
-    private final Set<TankGraphModel> enemies;
+    private final TankLogModel player;
     private boolean isDrawHealthBar = false;
     private LogicLevel level;
 
-    public TapHandler(TankGraphModel player_, Set<TankGraphModel> enemies_, LogicLevel level_) {
+    public TapHandler(TankLogModel player_, LogicLevel level_) {
         player = player_;
-        enemies = enemies_;
         level = level_;
     }
 
@@ -51,15 +49,15 @@ public class TapHandler {
             nextDirection = Direction.RIGHT;
         }
         if (movePressed) {
-            if (level.tryMoveTank(player.getTank(), nextDirection)) {
-                return new MoveCommand((Movable) player.getTank(), nextDirection);
+            if (level.tryMoveTank(player, nextDirection)) {
+                return new MoveCommand((Movable) player, nextDirection);
             }
         }
         return null;
     }
     private Command generatePlayerShootCommand() {
         if (Gdx.input.isKeyPressed(SPACE)) {
-            return new ShootCommand(level, player.getTank());
+            return new ShootCommand(level, player);
         }
         return null;
     }
@@ -73,7 +71,7 @@ public class TapHandler {
             commands.add(nextCommand);
         }
         if (Gdx.input.isKeyPressed(SPACE)) {
-            (new ShootCommand(level, player.getTank())).execute();
+            commands.add(new ShootCommand(level, player));
         }
 
         if (Gdx.input.isKeyPressed(L)) {
