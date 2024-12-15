@@ -77,13 +77,4 @@ public class TapHandler {
 
         return commands;
     }
-/*    public void handleHealthDrawing(Set<TankGraphModel> enemies) {
-        if (Gdx.input.isKeyPressed(L)) {
-            isDrawHealthBar = !isDrawHealthBar;
-            player.setDrawHealth(isDrawHealthBar);
-            for (TankGraphModel tank : enemies) {
-                tank.setDrawHealth(isDrawHealthBar);
-            }
-        }
-    }*/
 }

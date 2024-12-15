@@ -90,12 +90,12 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     @Override
     public void render() {
-
         listener.clearScreen();
 
         Set<Command> cmds = cmdHandler.generateCommands();
         cmdHandler.executeCommands(cmds);
 
+        listener.handleHealthDrawing();
         // get time passed since the last render
         listener.moveGraphicPics(Gdx.graphics.getDeltaTime());
         map.render();

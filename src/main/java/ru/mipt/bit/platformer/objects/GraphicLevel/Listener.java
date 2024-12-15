@@ -2,9 +2,7 @@ package ru.mipt.bit.platformer.objects.GraphicLevel;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import ru.mipt.bit.platformer.objects.LogicLevel.BulletLogModel;
-import ru.mipt.bit.platformer.objects.LogicLevel.Commands.DefaultDirectionMoveCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.TankLogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.TreeLogModel;
 import ru.mipt.bit.platformer.util.TileMovement;
@@ -12,6 +10,7 @@ import ru.mipt.bit.platformer.util.TileMovement;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.badlogic.gdx.Input.Keys.L;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class Listener {
@@ -29,12 +28,16 @@ public class Listener {
     private Set<BulletGraphModel> bullets = new HashSet<>();
     private Set<Drawable> drawables = new HashSet<>();
 
+    private Set<DrawableHealthDecorator> healthies = new HashSet<>();
+
     public Listener(TileMovement tileMovement_) {
         tileMovement = tileMovement_;
     }
     public void addPlayer(TankLogModel player_) {
         player = new TankGraphModel(TANK_PATH_TO_PNG, player_);
-        drawables.add(new DrawableHealthDecorator(player));
+        DrawableHealthDecorator healthy = new DrawableHealthDecorator(player);
+        drawables.add(healthy);
+        healthies.add(healthy);
     }
     public void addTree(TreeLogModel tree_) {
         TreeGraphModel tree = new TreeGraphModel(TREE_PATH_TO_PNG, tree_);
@@ -44,7 +47,9 @@ public class Listener {
     public void addEnemy(TankLogModel enemy_) {
         TankGraphModel enemy = new TankGraphModel(TANK_PATH_TO_PNG, enemy_);
         enemies.add(enemy);
-        drawables.add(new DrawableHealthDecorator(enemy));
+        DrawableHealthDecorator healthy = new DrawableHealthDecorator(enemy);
+        drawables.add(healthy);
+        healthies.add(healthy);
     }
     public void addBullet(BulletLogModel bullet_) {
         BulletGraphModel bullet = new BulletGraphModel(BULLET_PATH_TO_PNG, bullet_);
@@ -80,5 +85,12 @@ public class Listener {
         // clear the screen
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
+    }
+    public void handleHealthDrawing() {
+        if (Gdx.input.isKeyPressed(L)) {
+            for (DrawableHealthDecorator healthy : healthies) {
+                healthy.switchDrawHealth();
+            }
+        }
     }
 }

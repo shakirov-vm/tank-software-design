@@ -52,8 +52,8 @@ public class DrawableHealthDecorator implements Drawable {
         }
     }
 
-    public void setDrawHealth(boolean isDraw) {
-        drawHealth = isDraw;
+    public void switchDrawHealth() {
+        drawHealth = !drawHealth;
     }
 
     @Override
