@@ -82,11 +82,9 @@ public class Drawer implements LogicListener {
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
     }
-    private void handleHealthDrawing() {
-        if (Gdx.input.isKeyPressed(L)) {
-            for (GraphModel model : models) {
-                ((GraphModelHealthDecorator) model).switchDrawHealth();
-            }
+    public void handleHealthDrawing() {
+        for (GraphModel model : models) {
+            ((GraphModelHealthDecorator) model).switchDrawHealth();
         }
     }
 }

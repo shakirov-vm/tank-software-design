@@ -10,10 +10,15 @@ import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.GraphicLevel.Utils.Map;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
+import ru.mipt.bit.platformer.objects.LogicLevel.Commands.SwitchHealthCommand;
 import ru.mipt.bit.platformer.objects.LogicLevel.Generators.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
+import ru.mipt.bit.platformer.objects.LogicLevel.TapHandlers.HealthBarTapHandler;
+import ru.mipt.bit.platformer.objects.LogicLevel.TapHandlers.MoveTapHandler;
+import ru.mipt.bit.platformer.objects.LogicLevel.TapHandlers.ShootTapHandler;
+import ru.mipt.bit.platformer.objects.LogicLevel.TapHandlers.TapHandler;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -61,8 +66,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         level.subscribe(drawer);
         level.initialize(initObjects);
 
+        Set<TapHandler> handlers = new HashSet<>();
+        handlers.add(new MoveTapHandler(level));
+        handlers.add(new ShootTapHandler(level));
+        handlers.add(new HealthBarTapHandler(drawer));
+
         Set<CommandGenerator> generators = new HashSet<>();
-        generators.add(new TapHandler(level));
+        generators.add(new TapCommandGenerator(handlers));
         generators.add(new AICommandsGenerator(level));
         generators.add(new BulletCommandsGenerator(level));
 
