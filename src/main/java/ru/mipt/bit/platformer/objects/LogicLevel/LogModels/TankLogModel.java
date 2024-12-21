@@ -32,33 +32,17 @@ public class TankLogModel implements Obstacle, Movable, Liveable, LogModel {
     public float getPlayerMovementProgress() {
         return playerMovementProgress;
     }
-    public void setPlayerMovementProgress(float nextPMP) {
-        playerMovementProgress = nextPMP;
-    }
-
-    public int getHealth() {
-        return health;
-    }
 
     public Position getCurrPosition() { return currPosition; }
-    public Position getNextPosition() { return nextPosition; } // Do we need Rotation?
+    public Position getNextPosition() { return nextPosition; }
 
      public GridPoint2 getNextCoordinates(Direction direction) {
-        switch (direction) {
-            case UP:
-                return incrementedY(currPosition.getCoordinates());
-            case DOWN:
-                return decrementedY(currPosition.getCoordinates());
-            case LEFT:
-                return decrementedX(currPosition.getCoordinates());
-            case RIGHT:
-                return incrementedX(currPosition.getCoordinates());
-            default:
-                return new GridPoint2(0, 0);
-        }
+         return new GridPoint2(
+                 currPosition.getCoordinates().x + direction.getVector().x,
+                 currPosition.getCoordinates().y + direction.getVector().y);
     }
     public void move(Direction direction) {
-        setPlayerMovementProgress(0f);
+        playerMovementProgress = 0f;
         nextPosition.setCoordinates(getNextCoordinates(direction));
         currPosition.setDirection(direction);
     }
@@ -74,9 +58,11 @@ public class TankLogModel implements Obstacle, Movable, Liveable, LogModel {
             currPosition.setCoordinates(nextPosition.getCoordinates());
         }
     }
-
     public Set<GridPoint2> getBannedCoordinates() {
         HashSet<GridPoint2> Coordinates = new HashSet<>(Arrays.asList(currPosition.getCoordinates(), nextPosition.getCoordinates()));
         return Coordinates;
+    }
+    public int getHealth() {
+        return health;
     }
 }

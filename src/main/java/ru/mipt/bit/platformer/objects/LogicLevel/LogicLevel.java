@@ -88,63 +88,6 @@ public class LogicLevel {
         }
         bullets.remove(bullet);
     }
-    public boolean tryMoveTank(TankLogModel tank, Direction direction) {
-
-        Set<GridPoint2> obstacles = getObstaclesForTank(tank);
-
-        if (isEqual(tank.getPlayerMovementProgress(), 1f)) {
-            switch (direction) {
-                case UP:
-                    if (canMoveUp(obstacles, tank.getCurrPosition())) return true;
-                    else return false;
-                case DOWN:
-                    if (canMoveDown(obstacles, tank.getCurrPosition())) return true;
-                    else return false;
-                case LEFT:
-                    if (canMoveLeft(obstacles, tank.getCurrPosition())) return true;
-                    else return false;
-                case RIGHT:
-                    if (canMoveRight(obstacles, tank.getCurrPosition())) return true;
-                    else return false;
-            }
-        }
-        return false;
-    }
-    public boolean tryMoveBullet(BulletLogModel bullet) {
-
-        Set<GridPoint2> obstacles = getObstaclesForBullet();
-
-        if (isEqual(bullet.getPlayerMovementProgress(), 1f)) {
-            switch (bullet.getCurrPosition().getDirection()) {
-                case UP:
-                    if (canMoveUp(obstacles, bullet.getCurrPosition())) return true;
-                    else {
-                        removeBullet(bullet);
-                        return false;
-                    }
-                case DOWN:
-                    if (canMoveDown(obstacles, bullet.getCurrPosition())) return true;
-                    else {
-                        removeBullet(bullet);
-                        return false;
-                    }
-                case LEFT:
-                    if (canMoveLeft(obstacles, bullet.getCurrPosition())) return true;
-                    else {
-                        removeBullet(bullet);
-                        return false;
-                    }
-                case RIGHT:
-                    if (canMoveRight(obstacles, bullet.getCurrPosition())) return true;
-                    else {
-                        removeBullet(bullet);
-                        return false;
-                    }
-            }
-        }
-        return false;
-    }
-
     public Set<LogModel> getModels() {
         Set<LogModel> models = new HashSet<>();
         models.addAll(enemies);
@@ -153,16 +96,45 @@ public class LogicLevel {
         models.add(player);
         return models;
     }
-
     public void update(float deltaTime) {
         for (LogModel model : getModels()) {
             model.movementProgess(deltaTime, MOVEMENT_SPEED);
         }
     }
+    public boolean tryMoveTank(TankLogModel tank, Direction direction) {
+
+        Set<GridPoint2> obstacles = getObstaclesForTank(tank);
+
+        if (isEqual(tank.getPlayerMovementProgress(), 1f)) {
+            if (canMoveDirection(obstacles, tank.getCurrPosition(), direction))
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }
+    public boolean tryMoveBullet(BulletLogModel bullet) {
+
+        Set<GridPoint2> obstacles = getObstaclesForBullet();
+
+        if (isEqual(bullet.getPlayerMovementProgress(), 1f)) {
+            if (canMoveDirection(obstacles, bullet.getCurrPosition(), bullet.getCurrPosition().getDirection()))
+                return true;
+            else {
+                removeBullet(bullet);
+                return false;
+            }
+        }
+        return false;
+    }
 
     private Set<GridPoint2> getObstaclesForTank(TankLogModel tank) {
 
-        boolean isEnemies = enemies.remove(tank);
+        Set<TankLogModel> tankObstacles = new HashSet<>();
+
+        tankObstacles.addAll(enemies);
+        tankObstacles.add(player);
+        tankObstacles.remove(tank);
 
         HashSet<GridPoint2> bannedCoordinates = new HashSet<>();
         for (TreeLogModel obstacle : trees) {
@@ -172,25 +144,22 @@ public class LogicLevel {
             }
         }
         // if given tank is enemy, it removed; else given tank is player and need all tanks
-        for (TankLogModel obstacle : enemies) {
+        for (TankLogModel obstacle : tankObstacles) {
             Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
             for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
                 bannedCoordinates.add(coordinate);
             }
         }
-        if (isEnemies) { // given tank is enemy
-            Set<GridPoint2> oneObstacleBannedCoordinates = player.getBannedCoordinates();
-            for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
-                bannedCoordinates.add(coordinate);
-            }
-        }
-        if (isEnemies)
-            enemies.add(tank);
 
         return bannedCoordinates;
     }
     private Set<GridPoint2> getObstaclesForBullet() {
 
+        Set<TankLogModel> tankObstacles = new HashSet<>();
+
+        tankObstacles.addAll(enemies);
+        tankObstacles.add(player);
+
         HashSet<GridPoint2> bannedCoordinates = new HashSet<>();
         for (TreeLogModel obstacle : trees) {
             Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
@@ -199,39 +168,23 @@ public class LogicLevel {
             }
         }
         // if given tank is enemy, it removed; else given tank is player and need all tanks
-        for (TankLogModel obstacle : enemies) {
+        for (TankLogModel obstacle : tankObstacles) {
             Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
             for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
                 bannedCoordinates.add(coordinate);
             }
         }
+
         return bannedCoordinates;
     }
-    private boolean canMoveUp(Set<GridPoint2> obstacles, Position currPosition) {
+    private boolean canMoveDirection(Set<GridPoint2> obstacles, Position currPosition, Direction direction) {
+        GridPoint2 dest = new GridPoint2(
+                currPosition.getCoordinates().x + direction.getVector().x,
+                currPosition.getCoordinates().y + direction.getVector().y);
+
         boolean result = true;
         for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(incrementedY(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    private boolean canMoveDown(Set<GridPoint2> obstacles, Position currPosition) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(decrementedY(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    private boolean canMoveLeft(Set<GridPoint2> obstacles, Position currPosition) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(decrementedX(currPosition.getCoordinates()));
-        }
-        return result;
-    }
-    private boolean canMoveRight(Set<GridPoint2> obstacles, Position currPosition) {
-        boolean result = true;
-        for (GridPoint2 coords : obstacles) {
-            result = result && !coords.equals(incrementedX(currPosition.getCoordinates()));
+            result = result && !coords.equals(dest);
         }
         return result;
     }
