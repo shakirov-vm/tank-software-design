@@ -10,13 +10,14 @@ import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.GraphicLevel.Utils.Map;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.Commands.Command;
+import ru.mipt.bit.platformer.objects.LogicLevel.Generators.*;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitPath;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitRandom;
-import ru.mipt.bit.platformer.objects.LogicLevel.Utils.CommandsHandler;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Set;
 
 public class GameDesktopLauncher implements ApplicationListener {
@@ -65,7 +66,12 @@ public class GameDesktopLauncher implements ApplicationListener {
         drawer = new Drawer(map.createTileMovement(), map.getGroundLayer());
         level = new LogicLevel(drawer, initObjects);
 
-        cmdHandler = new CommandsHandler(level);
+        Set<CommandGenerator> generators = new HashSet<>();
+        generators.add(new TapHandler(level));
+        generators.add(new AICommandsGenerator(level));
+        generators.add(new BulletCommandsGenerator(level));
+
+        cmdHandler = new CommandsHandler(generators);
     }
 
     @Override

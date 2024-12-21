@@ -13,7 +13,7 @@ import java.util.Set;
 import static ru.mipt.bit.platformer.objects.LogicLevel.Utils.Direction.randomDirection;
 import static ru.mipt.bit.platformer.objects.LogicLevel.Utils.UtilsRandom.getRandomNumberUsingNextInt;
 
-public class AICommandsGenerator {
+public class AICommandsGenerator implements CommandGenerator {
 
     LogicLevel level;
     final int FREQUENCY = 5;
@@ -22,8 +22,9 @@ public class AICommandsGenerator {
         level = level_;
     }
 
-    public Set<Command> generateEnemiesCommands(Set<TankLogModel> enemies, LogicLevel level) {
+    public Set<Command> generate() {
         Set<Command> commands = new HashSet<>();
+        Set<TankLogModel> enemies = Set.copyOf(level.getEnemies());
 
         for (TankLogModel tank: enemies) {
             Direction direction = randomDirection();

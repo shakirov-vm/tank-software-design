@@ -14,14 +14,14 @@ import java.util.Set;
 
 import static com.badlogic.gdx.Input.Keys.*;
 
-public class TapHandler {
+public class TapHandler implements CommandGenerator {
 
     private final TankLogModel player;
     private boolean isDrawHealthBar = false;
     private LogicLevel level;
 
-    public TapHandler(TankLogModel player_, LogicLevel level_) {
-        player = player_;
+    public TapHandler(LogicLevel level_) {
+        player = level_.getPlayer();
         level = level_;
     }
 
@@ -62,7 +62,7 @@ public class TapHandler {
         return null;
     }
 
-    public Set<Command> generateKeysCommands() {
+    public Set<Command> generate() {
 
         Set<Command> commands = new HashSet<>();
 
