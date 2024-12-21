@@ -3,13 +3,14 @@ package ru.mipt.bit.platformer.objects.GraphicLevel.GraphModels;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces.Drawable;
 import ru.mipt.bit.platformer.objects.GraphicLevel.Utils.ModelTexture;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TreeLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Position;
+import ru.mipt.bit.platformer.util.TileMovement;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class TreeGraphModel implements Drawable {
+public class TreeGraphModel implements GraphModel {
 
     private final TreeLogModel tree;
 
@@ -27,6 +28,8 @@ public class TreeGraphModel implements Drawable {
     public void rectToCenter(TiledMapTileLayer groundLayer) {
 
     }
+
+    public void movePic(TileMovement tileMovement) {}
 
     @Override
     public void draw(Batch batch) {

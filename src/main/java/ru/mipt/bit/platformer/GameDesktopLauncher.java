@@ -28,12 +28,8 @@ public class GameDesktopLauncher implements ApplicationListener {
     private static final int TILES_WIDTH = 10;
     private static final int TILES_HEIGHT = 9;
 
-    private static final String MAP_PATH_TO_TMX = "level.tmx";
     private static final String OBSTACLES_PATH_TO_TMX = "src/main/resources/obstacles.txt";
 
-    private Batch batch;
-
-    private Map map;
     private MapInitObjects initObjects;
 
     private LogicLevel level;
@@ -60,11 +56,10 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void create() {
 
-        batch = new SpriteBatch();
-        map = new Map(batch, MAP_PATH_TO_TMX);
-
-        drawer = new Drawer(map.createTileMovement(), map.getGroundLayer());
-        level = new LogicLevel(drawer, initObjects);
+        drawer = new Drawer(new SpriteBatch());
+        level = new LogicLevel();
+        level.subscribe(drawer);
+        level.initialize(initObjects);
 
         Set<CommandGenerator> generators = new HashSet<>();
         generators.add(new TapHandler(level));
@@ -82,14 +77,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         cmdHandler.executeCommands(cmds);
 
         level.update(Gdx.graphics.getDeltaTime());
-
-        drawer.handleHealthDrawing();
-        drawer.moveGraphicPics();
-        map.render();
-
-        batch.begin();
-        drawer.drawModels(batch);
-        batch.end();
+        drawer.modelsMoveDraw();
     }
 
     @Override

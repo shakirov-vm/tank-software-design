@@ -2,7 +2,7 @@ package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.Drawer;
-import ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces.MovablePic;
+import ru.mipt.bit.platformer.objects.GraphicLevel.LogicListener;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.BulletLogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.LogModel;
@@ -22,8 +22,6 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.incrementedX;
 
 public class LogicLevel {
 
-    Drawer drawer;
-
     private static final float MOVEMENT_SPEED = 0.4f;
 
     private TankLogModel player;
@@ -31,9 +29,11 @@ public class LogicLevel {
     private Set<TankLogModel> enemies = new HashSet<>();
     private Set<BulletLogModel> bullets = new HashSet<>();
 
+    private Set<LogicListener> subscribers = new HashSet<>();
+
     private static final String BULLET_PATH_TO_PNG = "images/bullet.png";
 
-    private void initializeWithObjects(MapInitObjects initObjects) {
+    public void initialize(MapInitObjects initObjects) {
         for (GridPoint2 coord : initObjects.getObstacles()) {
             addTree(new TreeLogModel(coord.x, coord.y));
         }
@@ -43,10 +43,8 @@ public class LogicLevel {
         }
         addPlayer(new TankLogModel(initObjects.getStartedCoordinates().x, initObjects.getStartedCoordinates().y));
     }
-
-    public LogicLevel(Drawer drawer_, MapInitObjects initObjects) {
-        drawer = drawer_;
-        initializeWithObjects(initObjects);
+    public void subscribe(LogicListener subscriber) {
+        subscribers.add(subscriber);
     }
 
     public TankLogModel getPlayer() {
@@ -61,23 +59,33 @@ public class LogicLevel {
 
     private void addPlayer(TankLogModel player_) {
         player = player_;
-        drawer.addPlayer(player);
+        for (LogicListener subscriber : subscribers) {
+            subscriber.addModel(player);
+        }
     }
     private void addTree(TreeLogModel tree) {
         trees.add(tree);
-        drawer.addTree(tree);
+        for (LogicListener subscriber : subscribers) {
+            subscriber.addModel(tree);
+        }
     }
     private void addEnemy(TankLogModel enemy) {
         enemies.add(enemy);
-        drawer.addEnemy(enemy);
+        for (LogicListener subscriber : subscribers) {
+            subscriber.addModel(enemy);
+        }
     }
 
     public void addBullet(BulletLogModel bullet) {
         bullets.add(bullet);
-        drawer.addBullet(bullet);
+        for (LogicListener subscriber : subscribers) {
+            subscriber.addModel(bullet);
+        }
     }
     public void removeBullet(BulletLogModel bullet) {
-        drawer.removeBullet(bullet);
+        for (LogicListener subscriber : subscribers) {
+            subscriber.removeModel(bullet);
+        }
         bullets.remove(bullet);
     }
     public boolean tryMoveTank(TankLogModel tank, Direction direction) {

@@ -1,7 +1,0 @@
-package ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces;
-
-import ru.mipt.bit.platformer.util.TileMovement;
-
-public interface MovablePic {
-    void movePic(TileMovement tileMovement);
-}
