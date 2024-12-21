@@ -131,34 +131,21 @@ public class LogicLevel {
     private Set<GridPoint2> getObstaclesForTank(TankLogModel tank) {
 
         Set<TankLogModel> tankObstacles = new HashSet<>();
-
         tankObstacles.addAll(enemies);
         tankObstacles.add(player);
         tankObstacles.remove(tank);
 
-        HashSet<GridPoint2> bannedCoordinates = new HashSet<>();
-        for (TreeLogModel obstacle : trees) {
-            Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
-            for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
-                bannedCoordinates.add(coordinate);
-            }
-        }
-        // if given tank is enemy, it removed; else given tank is player and need all tanks
-        for (TankLogModel obstacle : tankObstacles) {
-            Set<GridPoint2> oneObstacleBannedCoordinates = obstacle.getBannedCoordinates();
-            for (GridPoint2 coordinate : oneObstacleBannedCoordinates) {
-                bannedCoordinates.add(coordinate);
-            }
-        }
-
-        return bannedCoordinates;
+        return getObstacles(tankObstacles);
     }
     private Set<GridPoint2> getObstaclesForBullet() {
 
         Set<TankLogModel> tankObstacles = new HashSet<>();
-
         tankObstacles.addAll(enemies);
         tankObstacles.add(player);
+
+        return getObstacles(tankObstacles);
+    }
+    private Set<GridPoint2> getObstacles(Set<TankLogModel> tankObstacles) {
 
         HashSet<GridPoint2> bannedCoordinates = new HashSet<>();
         for (TreeLogModel obstacle : trees) {

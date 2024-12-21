@@ -6,5 +6,4 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 public interface LogModel {
 
     public void movementProgess(float deltaTime, float movement_speed);
-
 }
