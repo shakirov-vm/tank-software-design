@@ -75,9 +75,10 @@ public class GameDesktopLauncher implements ApplicationListener {
         Set<Command> cmds = cmdHandler.generateCommands();
         cmdHandler.executeCommands(cmds);
 
+        level.update(Gdx.graphics.getDeltaTime());
+
         drawer.handleHealthDrawing();
-        // get time passed since the last render
-        drawer.moveGraphicPics(Gdx.graphics.getDeltaTime());
+        drawer.moveGraphicPics();
         map.render();
 
         batch.begin();

@@ -9,7 +9,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TreeLogModel implements Obstacle {
+import static com.badlogic.gdx.math.MathUtils.isEqual;
+import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
+
+public class TreeLogModel implements Obstacle, LogModel {
 
     // Model position
     private final Position position;
@@ -25,4 +28,6 @@ public class TreeLogModel implements Obstacle {
         HashSet<GridPoint2> Coordinates = new HashSet<>(Arrays.asList(position.getCoordinates()));
         return Coordinates;
     }
+    public void movementProgess(float deltaTime, float movement_speed) {}
+
 }

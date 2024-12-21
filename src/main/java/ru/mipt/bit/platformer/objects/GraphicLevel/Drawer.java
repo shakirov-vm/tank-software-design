@@ -28,8 +28,6 @@ public class Drawer {
     private static final String TANK_PATH_TO_PNG = "images/tank_blue.png";
     private static final String BULLET_PATH_TO_PNG = "images/bullet.png";
 
-    private static final float MOVEMENT_SPEED = 0.4f;
-
     private TileMovement tileMovement;
     private TiledMapTileLayer groundLayer;
 
@@ -80,10 +78,9 @@ public class Drawer {
         bulletLogToGraph.remove(bullet_);
     }
 
-    public void moveGraphicPics(float deltaTime) {
+    public void moveGraphicPics() {
         for (MovablePic movablePic : movablePics) {
             movablePic.movePic(tileMovement);
-            movablePic.changeMovementProgess(deltaTime, MOVEMENT_SPEED);
         }
     }
     public void drawModels(Batch batch) {

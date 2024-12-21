@@ -2,14 +2,18 @@ package ru.mipt.bit.platformer.objects.LogicLevel;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.objects.GraphicLevel.Drawer;
+import ru.mipt.bit.platformer.objects.GraphicLevel.GraphInterfaces.MovablePic;
 import ru.mipt.bit.platformer.objects.LogicLevel.InitMap.MapInitObjects;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.BulletLogModel;
+import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.LogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TankLogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.LogModels.TreeLogModel;
 import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Direction;
 import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Position;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
@@ -19,6 +23,8 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.incrementedX;
 public class LogicLevel {
 
     Drawer drawer;
+
+    private static final float MOVEMENT_SPEED = 0.4f;
 
     private TankLogModel player;
     private Set<TreeLogModel> trees = new HashSet<>();
@@ -129,6 +135,21 @@ public class LogicLevel {
             }
         }
         return false;
+    }
+
+    public Set<LogModel> getModels() {
+        Set<LogModel> models = new HashSet<>();
+        models.addAll(enemies);
+        models.addAll(trees);
+        models.addAll(bullets);
+        models.add(player);
+        return models;
+    }
+
+    public void update(float deltaTime) {
+        for (LogModel model : getModels()) {
+            model.movementProgess(deltaTime, MOVEMENT_SPEED);
+        }
     }
 
     private Set<GridPoint2> getObstaclesForTank(TankLogModel tank) {

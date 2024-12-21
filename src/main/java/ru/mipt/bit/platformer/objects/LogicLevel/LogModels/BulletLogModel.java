@@ -7,7 +7,7 @@ import ru.mipt.bit.platformer.objects.LogicLevel.Utils.Position;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class BulletLogModel {
+public class BulletLogModel implements LogModel {
 
     // Model position
     private final Position currPosition;
@@ -57,5 +57,4 @@ public class BulletLogModel {
             currPosition.setCoordinates(nextPosition.getCoordinates());
         }
     }
-
 }

@@ -44,10 +44,6 @@ public class BulletGraphModel implements Drawable, MovablePic {
     }
 
     @Override
-    public void changeMovementProgess(float deltaTime, float MOVEMENT_SPEED) {
-        bullet.movementProgess(deltaTime, MOVEMENT_SPEED);
-    }
-    @Override
     public void draw(Batch batch) {
         // render bullet
         drawTextureRegionUnscaled(batch, fastBullet.getRegion(), rectangle, bullet.getCurrPosition().getDirection().getAngle());

@@ -41,10 +41,6 @@ public class TankGraphModel implements Drawable, MovablePic {
     }
 
     @Override
-    public void changeMovementProgess(float deltaTime, float MOVEMENT_SPEED) {
-        tank.movementProgess(deltaTime, MOVEMENT_SPEED);
-    }
-    @Override
     public void draw(Batch batch) {
         // render player
         drawTextureRegionUnscaled(batch, blueTank.getRegion(), rectangle, tank.getCurrPosition().getDirection().getAngle());
