@@ -6,6 +6,9 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.mipt.bit.platformer.objects.Config;
 import ru.mipt.bit.platformer.objects.GraphicLevel.*;
 import ru.mipt.bit.platformer.objects.GraphicLevel.Utils.Map;
 import ru.mipt.bit.platformer.objects.LogicLevel.*;
@@ -30,8 +33,8 @@ public class GameDesktopLauncher implements ApplicationListener {
     private static final int SCREEN_WIDTH = 1280;
     private static final int SCREEN_HEIGHT = 1024;
 
-    private static final int TILES_WIDTH = 10;
-    private static final int TILES_HEIGHT = 9;
+    public static final int TILES_WIDTH = 10;
+    public static final int TILES_HEIGHT = 9;
 
     private static final String OBSTACLES_PATH_TO_TMX = "src/main/resources/obstacles.txt";
 
@@ -42,7 +45,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private CommandsHandler cmdHandler;
 
-    private enum obstaclesCreateMode {
+    public enum obstaclesCreateMode {
         RANDOM_OBSTACLES,
         OBSTACLES_FROM_FILE,
     }
@@ -51,7 +54,6 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     public GameDesktopLauncher() {
         obstaclesMode = obstaclesCreateMode.RANDOM_OBSTACLES;
-        initObjects = (MapInitObjects) new MapInitRandom(TILES_WIDTH, TILES_HEIGHT);
     }
     public GameDesktopLauncher(Path toObstaclesCoords) throws IOException {
         obstaclesMode = obstaclesCreateMode.OBSTACLES_FROM_FILE;
@@ -61,10 +63,14 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void create() {
 
+        ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+        level = context.getBean(LogicLevel.class);
+
+        // Unfortunately, gdx.drawer crashes with an exception, so due to the dependency
+        // on drawer, it is impossible to move the initialization of these classes to Spring
         drawer = new Drawer(new SpriteBatch());
-        level = new LogicLevel();
         level.subscribe(drawer);
-        level.initialize(initObjects);
+        level.initialize(context.getBean(MapInitObjects.class));
 
         Set<TapHandler> handlers = new HashSet<>();
         handlers.add(new MoveTapHandler(level));
@@ -112,6 +118,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     }
 
     public static void main(String[] args) throws IOException {
+
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         // level width: 10 tiles x 128px, height: 8 tiles x 128px
         config.setWindowedMode(SCREEN_WIDTH, SCREEN_HEIGHT);
